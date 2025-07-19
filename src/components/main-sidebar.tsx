@@ -38,14 +38,12 @@ export function MainSidebar() {
           {links.map((link) => (
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
-                asChild
+                href={link.href}
                 isActive={pathname === link.href}
                 tooltip={link.label}
               >
-                <Link href={link.href}>
-                  <link.icon className="h-5 w-5" />
-                  <span>{link.label}</span>
-                </Link>
+                <link.icon className="h-5 w-5" />
+                <span>{link.label}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
