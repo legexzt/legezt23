@@ -4,3 +4,5 @@ config();
 import '@/ai/flows/pdf-analyzer.ts';
 import '@/ai/flows/visual-q-and-a.ts';
 import '@/ai/flows/youtube-notes-generator.ts';
+import '@/ai/flows/fetch-youtube-info.ts';
+import '@/ai/flows/download-youtube.ts';
