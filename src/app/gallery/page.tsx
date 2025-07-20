@@ -10,9 +10,10 @@ import type { ScrapeResult } from '@/ai/flows/scrape-types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Download, Link } from 'lucide-react';
+import { Download, Link as LinkIcon } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useSearchStore } from '@/hooks/use-search';
+import { useToast } from '@/hooks/use-toast';
 
 function GallerySkeleton() {
     return (
@@ -31,6 +32,7 @@ export default function GalleryPage() {
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const { query } = useSearchStore();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -57,6 +59,33 @@ export default function GalleryPage() {
             setLoading(false);
         }
     };
+
+    const handleDownload = async (imageUrl: string, imageName: string = 'legezterest-image.png') => {
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = imageName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading image:', error);
+            toast({
+                title: 'Download Error',
+                description: 'Could not download the image.',
+                variant: 'destructive',
+            });
+        }
+    };
+    
+    const handleCopyLink = (src: string) => {
+        navigator.clipboard.writeText(src);
+        toast({ title: 'Link Copied!', description: 'Image URL copied to clipboard.' });
+    }
 
     useEffect(() => {
         if (user) {
@@ -110,14 +139,12 @@ export default function GalleryPage() {
                                 unoptimized
                             />
                             <div className="absolute top-2 right-2 flex gap-2">
-                               <Button size="icon" variant="secondary" onClick={() => selectedImage.src && navigator.clipboard.writeText(selectedImage.src)}>
-                                   <Link className="h-4 w-4" />
+                               <Button size="icon" variant="secondary" onClick={() => selectedImage.src && handleCopyLink(selectedImage.src)}>
+                                   <LinkIcon className="h-4 w-4" />
                                </Button>
-                               <a href={selectedImage.src} download target="_blank" rel="noopener noreferrer">
-                                   <Button size="icon" variant="secondary">
-                                       <Download className="h-4 w-4" />
-                                   </Button>
-                               </a>
+                               <Button size="icon" variant="secondary" onClick={() => handleDownload(selectedImage.src, selectedImage.alt)}>
+                                   <Download className="h-4 w-4" />
+                               </Button>
                             </div>
                         </div>
                     )}

@@ -29,7 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 
 const links = [
-  { href: '/gallery', label: 'Gallery', icon: ImageIcon },
+  { href: '/gallery', label: 'Legezterest', icon: ImageIcon },
   { href: '/news', label: 'News', icon: Newspaper },
 ];
 
