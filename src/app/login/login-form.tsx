@@ -64,6 +64,10 @@ export default function LoginForm() {
         router.push('/home');
     } catch (error: any) {
         console.error('Social login error:', error);
+        if (error.code === 'auth/popup-closed-by-user') {
+            setMessage({ type: 'error', text: 'Login cancelled. Please try again.'});
+            return;
+        }
         let errorMessage = 'An error occurred with social login.';
         if (typeof error.message === 'string') {
             errorMessage = error.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.$/, '');
@@ -209,3 +213,5 @@ export default function LoginForm() {
     </motion.div>
   );
 }
+
+    
