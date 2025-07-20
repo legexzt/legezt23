@@ -191,27 +191,3 @@ export default function LegeztifyPage() {
         </div>
     );
 }
-
-// Minimal component definitions for shadcn/ui to avoid breaking the app if they don't exist
-// In a real scenario, these would be in their respective files in components/ui
-const ScrollArea = ({ className, children }: { className?: string; children: React.ReactNode }) => (
-    <div className={`overflow-y-auto ${className}`}>
-        {children}
-    </div>
-);
-
-const Avatar = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-    <div className={`relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full ${className}`}>
-        {children}
-    </div>
-);
-
-const AvatarImage = ({ src, alt, ...props }: { src: string, alt: string, [key: string]: any }) => (
-    <Image src={src} alt={alt} width={40} height={40} className="aspect-square h-full w-full" {...props} />
-);
-
-const AvatarFallback = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-    <span className={`flex h-full w-full items-center justify-center rounded-full bg-muted ${className}`}>
-        {children}
-    </span>
-);
