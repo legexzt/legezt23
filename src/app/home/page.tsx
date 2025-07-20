@@ -11,6 +11,7 @@ import { Youtube, Music, Image as ImageIcon, FileText, Bot, ArrowRight, Rss, Mai
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AnimatedBackground from "../AnimatedBackground";
 
 export default function HomePage() {
   const { user, signOut } = useAuth();
@@ -89,7 +90,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen w-full font-sans bg-background text-foreground">
         <div className="absolute inset-0 z-0 opacity-20">
-            {/* You can keep the animated background or use a static one */}
+            <AnimatedBackground />
         </div>
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-background via-background/90 to-background"></div>
 
