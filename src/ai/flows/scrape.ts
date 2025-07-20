@@ -5,27 +5,13 @@
  * @fileOverview A flow to scrape a URL using Firecrawl.
  * 
  * - scrapeUrl - A function that scrapes a URL using Firecrawl.
- * - ScrapeUrlInput - The input type for the scrapeUrl function.
- * - ScrapeResult - The return type for the scrapeUrl function.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import type { ScrapeUrlInput, ScrapeResult } from './scrape-types';
+import { ScrapeUrlSchema, ScrapeResultSchema } from './scrape-types';
 
-export const ScrapeUrlSchema = z.object({
-  url: z.string().url(),
-  render: z.boolean().optional().default(true),
-  wait: z.number().optional().default(2000),
-});
-
-export type ScrapeUrlInput = z.infer<typeof ScrapeUrlSchema>;
-
-export const ScrapeResultSchema = z.object({
-  success: z.boolean(),
-  data: z.any().optional(),
-  error: z.string().optional(),
-});
-export type ScrapeResult = z.infer<typeof ScrapeResultSchema>;
 
 export async function scrapeUrl(input: ScrapeUrlInput): Promise<ScrapeResult> {
   return await scrapeUrlFlow(input);
