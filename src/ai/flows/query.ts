@@ -13,14 +13,15 @@ async function searchWithBrave(query: string): Promise<string | null> {
         console.error("BRAVE_SEARCH_API_KEY is not set.");
         throw new Error("Server configuration error: Missing Brave Search API key.");
     }
-    const searchUrl = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}`;
+    const searchUrl = `https://brave-web-search.p.rapidapi.com/search?q=${encodeURIComponent(query)}`;
     
     try {
         const response = await fetch(searchUrl, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'X-Subscription-Token': braveApiKey,
+                'X-RapidAPI-Key': braveApiKey,
+                'X-RapidAPI-Host': 'brave-web-search.p.rapidapi.com'
             },
         });
 
@@ -31,8 +32,8 @@ async function searchWithBrave(query: string): Promise<string | null> {
         }
 
         const result = await response.json();
-        if (result.web && result.web.results && result.web.results.length > 0) {
-            const topUrl = result.web.results[0].url;
+        if (result.results && result.results.length > 0) {
+            const topUrl = result.results[0].url;
             console.log(`Found top URL with Brave Search: ${topUrl}`);
             return topUrl;
         } else {
@@ -143,7 +144,7 @@ export const queryFlow = ai.defineFlow(
                 const response: QueryResult = {
                     title: metadata?.title,
                     summary: llm_extraction?.summary,
-                    bulletPoints: llm_extraction?.bulletPoints,
+                    bulletPoints: ll_extraction?.bulletPoints,
                     table: llm_extraction?.table,
                     links: llm_extraction?.links,
                     favicon: metadata?.favicon,
