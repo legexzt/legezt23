@@ -29,7 +29,7 @@ export default function GalleryPage() {
     const [images, setImages] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
-    const { query, setQuery } = useSearchStore();
+    const { query } = useSearchStore();
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -43,11 +43,11 @@ export default function GalleryPage() {
             const result: ScrapeResult = await scrapeUrl({
                 url: `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(searchQuery)}`,
             });
-            if (result && result.data && Array.isArray(result.data.images)) {
+            if (result && result.success && result.data && Array.isArray(result.data.images)) {
                 setImages(result.data.images.slice(0, 50));
             } else {
                 setImages([]);
-                console.error('No images found or invalid data format:', result);
+                console.error('No images found or invalid data format:', result?.error || result);
             }
         } catch (error) {
             console.error('Failed to fetch images:', error);
@@ -69,7 +69,7 @@ export default function GalleryPage() {
 
     return (
         <div className="container mx-auto py-8 px-4">
-            <h1 className="text-4xl font-bold mb-8 capitalize">{query || 'Image Gallery'}</h1>
+            <h1 className="text-4xl font-bold mb-8 capitalize">{query || 'Legezterest'}</h1>
             {loading ? (
                 <GallerySkeleton />
             ) : (
@@ -83,6 +83,7 @@ export default function GalleryPage() {
                                     width={300}
                                     height={300}
                                     className="w-full h-full object-cover aspect-square"
+                                    unoptimized
                                 />
                             </Card>
                         ))}
@@ -105,6 +106,7 @@ export default function GalleryPage() {
                                 width={1200}
                                 height={1200}
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                                unoptimized
                             />
                             <div className="absolute top-2 right-2 flex gap-2">
                                <Button size="icon" variant="secondary" onClick={() => selectedImage.src && navigator.clipboard.writeText(selectedImage.src)}>
