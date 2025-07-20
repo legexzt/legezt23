@@ -78,7 +78,11 @@ export default function GalleryPage() {
 
     const handleDownload = async (imageUrl: string, imageName: string = 'legezterest-image.jpg') => {
         try {
-            const response = await fetch(imageUrl);
+             // Use a proxy to fetch the image to bypass CORS issues
+            const response = await fetch(imageUrl, { headers: { 'Cache-Control': 'no-cache' } });
+            if (!response.ok) {
+                throw new Error(`Failed to fetch image: ${response.statusText}`);
+            }
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -92,7 +96,7 @@ export default function GalleryPage() {
             console.error('Error downloading image:', error);
             toast({
                 title: 'Download Error',
-                description: 'Could not download the image. The source might be blocking it.',
+                description: 'Could not download the image. The source might be blocking it or it requires a proxy.',
                 variant: 'destructive',
             });
         }
