@@ -67,8 +67,8 @@ export default function GalleryPage() {
             console.error('Failed to fetch images:', error);
             setImages([]);
             toast({
-                title: 'Error',
-                description: error.message || 'An unexpected error occurred.',
+                title: 'Error Searching Images',
+                description: error.message || 'An unexpected error occurred while searching.',
                 variant: 'destructive',
             });
         } finally {
@@ -106,10 +106,10 @@ export default function GalleryPage() {
     useEffect(() => {
         if (user && query) {
             fetchImages(query);
-        } else {
-            setLoading(false);
-            setHasSearched(false);
+        } else if (!query) {
+            // Clear results if query is cleared
             setImages([]);
+            setHasSearched(false);
         }
     }, [user, query]);
 
@@ -143,6 +143,7 @@ export default function GalleryPage() {
                                 height={300}
                                 className="w-full h-full object-cover aspect-square"
                                 onClick={() => setSelectedImage(image)}
+                                unoptimized // Add this if you get hostname errors for dynamic image sources
                             />
                             <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
                                 {image.source}
@@ -175,6 +176,7 @@ export default function GalleryPage() {
                                 width={1200}
                                 height={1200}
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                                unoptimized
                             />
                             <div className="absolute top-2 right-2 flex gap-2">
                                <Button size="icon" variant="secondary" onClick={() => selectedImage && handleCopyLink(selectedImage.src)}>
@@ -195,5 +197,3 @@ export default function GalleryPage() {
         </div>
     );
 }
-
-    
