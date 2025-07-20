@@ -55,7 +55,7 @@ export function MainSidebar() {
       <SidebarFooter>
         <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Settings">
+                <SidebarMenuButton href="/settings" tooltip="Settings" isActive={pathname === '/settings'}>
                     <Settings className="h-5 w-5" />
                     <span>Settings</span>
                 </SidebarMenuButton>
