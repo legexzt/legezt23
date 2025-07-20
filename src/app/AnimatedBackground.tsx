@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import styles from "./AnimatedBackground.module.css";
 
-const IMAGE_COUNT = 5; // Use 5 placeholder images
+const IMAGE_COUNT = 5; // We assume you have bg1.jpg through bg5.jpg in /public/backgrounds/
 
 interface AnimatedBackgroundProps {
   className?: string;
@@ -17,26 +17,24 @@ export default function AnimatedBackground({ className = "" }: AnimatedBackgroun
     const interval = setInterval(() => {
       setFade(true);
       setTimeout(() => {
+        // Correctly cycle from 1 to IMAGE_COUNT
         setCurrent((prev) => (prev % IMAGE_COUNT) + 1);
         setFade(false);
-      }, 1500); // Fade duration
-    }, 4000); // Image rotation interval
+      }, 1500); // This should match the CSS transition duration for a smooth effect
+    }, 4000); // Time each image is displayed
 
     return () => clearInterval(interval);
   }, []);
 
-  const getImageUrl = () => {
-    // Use different placeholder dimensions to ensure the image visibly changes
-    const dimensions = ['1920x1080', '1280x720', '1024x768', '1600x900', '1366x768'];
-    // The current state is 1-based, so subtract 1 for 0-based array index
-    return `https://placehold.co/${dimensions[current - 1]}`;
+  const getImageUrl = (imageNumber: number) => {
+    return `/backgrounds/bg${imageNumber}.jpg`;
   };
 
   return (
     <div
       className={`${styles["animated-bg"]} ${styles["animated-bg-dynamic"]} ${fade ? styles.fade : ""} ${className}`}
       style={{
-        ["--bg-url"]: `url('${getImageUrl()}')`
+        ["--bg-url"]: `url('${getImageUrl(current)}')`
       } as Record<string, string>}
     />
   );
