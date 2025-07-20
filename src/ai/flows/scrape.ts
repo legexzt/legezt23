@@ -3,6 +3,10 @@
 
 /**
  * @fileOverview A flow to scrape a URL using Firecrawl.
+ * 
+ * - scrapeUrl - A function that scrapes a URL using Firecrawl.
+ * - ScrapeUrlInput - The input type for the scrapeUrl function.
+ * - ScrapeResult - The return type for the scrapeUrl function.
  */
 
 import { ai } from '@/ai/genkit';
@@ -23,10 +27,13 @@ export const ScrapeResultSchema = z.object({
 });
 export type ScrapeResult = z.infer<typeof ScrapeResultSchema>;
 
+export async function scrapeUrl(input: ScrapeUrlInput): Promise<ScrapeResult> {
+  return scrapeUrlFlow(input);
+}
 
-export const scrapeUrl = ai.defineFlow(
+const scrapeUrlFlow = ai.defineFlow(
   {
-    name: 'scrapeUrl',
+    name: 'scrapeUrlFlow',
     inputSchema: ScrapeUrlSchema,
     outputSchema: ScrapeResultSchema,
   },
