@@ -122,7 +122,7 @@ export default function HomePage() {
                         transition={{ staggerChildren: 0.2, delay: index * 0.1 }}
                     >
                         <motion.div variants={cardVariants}>
-                            <Card className="h-full bg-card/80 backdrop-blur-sm border-border hover:border-primary transition-all duration-300 group overflow-hidden shadow-lg hover:shadow-primary/20">
+                            <Card className="h-full bg-card/80 backdrop-blur-sm border-border hover:border-primary transition-all duration-300 group overflow-hidden shadow-lg hover:shadow-primary/20 flex flex-col">
                                 <div className="relative h-48 overflow-hidden">
                                      <Image
                                         src={card.image}
@@ -132,15 +132,14 @@ export default function HomePage() {
                                         data-ai-hint={card['data-ai-hint']}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent"></div>
                                     <div className={`absolute top-4 right-4 p-3 rounded-full bg-card/50 backdrop-blur-sm`}>
                                         <card.icon className="w-6 h-6 text-primary" />
                                     </div>
                                 </div>
-                                <div className="p-6">
+                                <div className="p-6 flex-grow flex flex-col">
                                     <h3 className="text-2xl font-bold text-foreground mb-2">{card.title}</h3>
-                                    <p className="text-muted-foreground mb-6">{card.description}</p>
-                                    <Link href={card.link} className="inline-flex items-center font-semibold text-primary hover:text-primary/80 transition-colors">
+                                    <p className="text-muted-foreground mb-6 flex-grow">{card.description}</p>
+                                    <Link href={card.link} className="inline-flex items-center font-semibold text-primary hover:text-primary/80 transition-colors mt-auto">
                                         Explore Now <ChevronRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                                     </Link>
                                 </div>
