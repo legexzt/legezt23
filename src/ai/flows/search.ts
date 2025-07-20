@@ -63,8 +63,9 @@ const searchScrapeFlow = ai.defineFlow(
 
     const result: any = await response.json();
     
-    if (result.data && result.data.images) {
-      return result.data.images.slice(0, 20).map((img: any) => ({ ...img, source }));
+    // Corrected logic: check for data.llm_extraction.images
+    if (result.data && result.data.llm_extraction && result.data.llm_extraction.images) {
+      return result.data.llm_extraction.images.slice(0, 20).map((img: any) => ({ ...img, source }));
     }
 
     return [];
@@ -112,5 +113,3 @@ export const searchFlow = ai.defineFlow(
         return allImages;
     }
 );
-
-    
