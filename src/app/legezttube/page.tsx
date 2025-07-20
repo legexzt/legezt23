@@ -376,13 +376,15 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
                       </div>
 
                       <div className="flex items-center space-x-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}
-                          className="text-white hover:bg-white/20 relative"
-                        >
-                          <Settings className="w-5 h-5" />
+                        <div className="relative">
+                           <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}
+                            className="text-white hover:bg-white/20"
+                          >
+                            <Settings className="w-5 h-5" />
+                          </Button>
                            {/* Settings Panel */}
                             <AnimatePresence>
                               {showSettings && (
@@ -391,6 +393,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
                                   animate={{ opacity: 1, y: 0, scale: 1 }}
                                   exit={{ opacity: 0, y: 10, scale: 0.9 }}
                                   className="absolute bottom-12 right-0 bg-gray-900/95 backdrop-blur-md rounded-lg p-4 min-w-[250px] text-left"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
                                   <div className="space-y-4">
                                     <div>
@@ -431,7 +434,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
                                 </motion.div>
                               )}
                             </AnimatePresence>
-                        </Button>
+                        </div>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -593,120 +596,122 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
   );
 }
 
-
-// Mock video data
-const mockVideos = [
-  {
-    id: 1,
-    title: "Epic Gaming Montage 2025 | Best Moments",
-    channel: "GameMaster Pro",
-    views: "2.1M views",
-    time: "3 days ago",
-    duration: "15:42",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-  },
-  {
-    id: 2,
-    title: "Relaxing Lofi Hip Hop Beats | Study Music",
-    channel: "Chill Vibes",
-    views: "8.5M views",
-    time: "1 week ago", 
-    duration: "1:24:33",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-  },
-  {
-    id: 3,
-    title: "Amazing Nature Documentary | 4K Ultra HD",
-    channel: "Wild Explorer",
-    views: "5.2M views",
-    time: "5 days ago",
-    duration: "28:15",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-  },
-  {
-    id: 4,
-    title: "Tech Review: Latest Smartphone 2025",
-    channel: "Tech Central",
-    views: "1.8M views",
-    time: "2 days ago",
-    duration: "12:38",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
-  },
-  {
-    id: 5,
-    title: "Cooking Masterclass | Italian Pasta",
-    channel: "Chef's Kitchen",
-    views: "3.7M views",
-    time: "1 day ago",
-    duration: "18:22",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
-  },
-  {
-    id: 6,
-    title: "Workout Routine | Full Body Training",
-    channel: "Fitness Pro",
-    views: "4.1M views",
-    time: "4 days ago",
-    duration: "22:45",
-    thumbnail: "https://placehold.co/500x300",
-    videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
-  }
-];
-
 const FloatingParticles = () => {
-  const [particles, setParticles] = useState<any[]>([]);
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: 20 }).map(() => ({
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      duration: 10 + Math.random() * 10,
-      delay: Math.random() * 5,
-      x: Math.random() * 100 - 50,
-    }));
-    setParticles(newParticles);
-  }, []);
-
-  return (
-    <>
-      {particles.map((particle, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
-          style={{
-            left: particle.left,
-            top: particle.top,
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, particle.x, 0],
-            opacity: [0.3, 0.8, 0.3],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: particle.delay,
-          }}
-        />
-      ))}
-    </>
-  );
-};
+    const [particles, setParticles] = useState<any[]>([]);
+  
+    useEffect(() => {
+      const newParticles = Array.from({ length: 20 }).map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        x: Math.random() * 100 - 50,
+      }));
+      setParticles(newParticles);
+    }, []);
+  
+    return (
+      <>
+        {particles.map((particle, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
+            style={{
+              left: particle.left,
+              top: particle.top,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, particle.x, 0],
+              opacity: [0.3, 0.8, 0.3],
+            }}
+            transition={{
+              duration: particle.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: particle.delay,
+            }}
+          />
+        ))}
+      </>
+    );
+  };
 
 
 export default function LegeztTube() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
-  const [filteredVideos, setFilteredVideos] = useState(mockVideos);
+  const [filteredVideos, setFilteredVideos] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchedVideoInfo, setSearchedVideoInfo] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Mock fetching videos
+    const mockVideos = [
+        {
+          id: 1,
+          title: "Epic Gaming Montage 2025 | Best Moments",
+          channel: "GameMaster Pro",
+          views: "2.1M views",
+          time: "3 days ago",
+          duration: "15:42",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        },
+        {
+          id: 2,
+          title: "Relaxing Lofi Hip Hop Beats | Study Music",
+          channel: "Chill Vibes",
+          views: "8.5M views",
+          time: "1 week ago", 
+          duration: "1:24:33",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        },
+        {
+          id: 3,
+          title: "Amazing Nature Documentary | 4K Ultra HD",
+          channel: "Wild Explorer",
+          views: "5.2M views",
+          time: "5 days ago",
+          duration: "28:15",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        },
+        {
+          id: 4,
+          title: "Tech Review: Latest Smartphone 2025",
+          channel: "Tech Central",
+          views: "1.8M views",
+          time: "2 days ago",
+          duration: "12:38",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+        },
+        {
+          id: 5,
+          title: "Cooking Masterclass | Italian Pasta",
+          channel: "Chef's Kitchen",
+          views: "3.7M views",
+          time: "1 day ago",
+          duration: "18:22",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+        },
+        {
+          id: 6,
+          title: "Workout Routine | Full Body Training",
+          channel: "Fitness Pro",
+          views: "4.1M views",
+          time: "4 days ago",
+          duration: "22:45",
+          thumbnail: "https://placehold.co/500x300",
+          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+        }
+      ];
+    setFilteredVideos(mockVideos);
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -902,6 +907,7 @@ export default function LegeztTube() {
         </AnimatePresence>
 
         {/* Video Grid */}
+        {!searchedVideoInfo && (
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           layout
@@ -983,6 +989,7 @@ export default function LegeztTube() {
             ))}
           </AnimatePresence>
         </motion.div>
+        )}
       </main>
 
       {/* Footer */}
