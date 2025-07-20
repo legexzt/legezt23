@@ -1,54 +1,14 @@
 'use server';
 /**
- * @fileOverview A flow to search the web for a query and return a structured summary.
- * - queryFlow - A function that takes a search query, finds a relevant URL, and uses Firecrawl to extract structured data.
+ * @fileOverview A flow to search the web for a query and return a structured summary using Firecrawl's Search API.
+ * - queryFlow - A function that takes a search query and uses Firecrawl to find and extract structured data.
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import type { QueryResult } from './query-types';
 
-async function searchWithBrave(query: string): Promise<string | null> {
-    const braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
-    if (!braveApiKey) {
-        console.error("BRAVE_SEARCH_API_KEY is not set.");
-        throw new Error("Server configuration error: Missing Brave Search API key.");
-    }
-    const searchUrl = `https://brave-web-search.p.rapidapi.com/search?q=${encodeURIComponent(query)}`;
-    
-    try {
-        const response = await fetch(searchUrl, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'X-RapidAPI-Key': braveApiKey,
-                'X-RapidAPI-Host': 'brave-web-search.p.rapidapi.com'
-            },
-        });
-
-        if (!response.ok) {
-            const errorBody = await response.text();
-            console.error(`Brave Search API error: ${response.statusText}`, errorBody);
-            throw new Error(`Failed to search with Brave. Status: ${response.status} - ${errorBody}`);
-        }
-
-        const result = await response.json();
-        if (result.results && result.results.length > 0) {
-            const topUrl = result.results[0].url;
-            console.log(`Found top URL with Brave Search: ${topUrl}`);
-            return topUrl;
-        } else {
-            console.log("Brave Search returned no results.");
-            return null;
-        }
-    } catch (error: any) {
-        console.error('A critical error occurred during the Brave Search request:', error);
-        throw new Error(error.message || 'An unexpected error occurred during web search.');
-    }
-}
-
-
-async function scrapeWithFirecrawl(url: string): Promise<any> {
-    const firecrawlApiUrl = 'https://api.firecrawl.dev/v0/scrape';
+async function searchWithFirecrawl(query: string): Promise<any> {
+    const firecrawlApiUrl = 'https://api.firecrawl.dev/v0/search';
     const apiKey = process.env.FIRECRAWL_API_KEY;
 
     if (!apiKey) {
@@ -56,7 +16,7 @@ async function scrapeWithFirecrawl(url: string): Promise<any> {
         throw new Error("Server configuration error: Missing Firecrawl API key.");
     }
     
-    console.log(`Scraping URL with Firecrawl: ${url}`);
+    console.log(`Searching with Firecrawl for: "${query}"`);
 
     try {
         const response = await fetch(firecrawlApiUrl, {
@@ -66,9 +26,12 @@ async function scrapeWithFirecrawl(url: string): Promise<any> {
                 'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-                url: url,
+                query: query,
                 pageOptions: {
                     onlyMainContent: true,
+                },
+                searchOptions: {
+                    limit: 1 // We only need the top result for a concise summary
                 },
                 extractorOptions: {
                     mode: 'llm-extraction',
@@ -89,25 +52,27 @@ async function scrapeWithFirecrawl(url: string): Promise<any> {
 
         if (!response.ok) {
             const errorBody = await response.text();
-            console.error(`Firecrawl API error: ${response.statusText}`, errorBody);
-            throw new Error(`Failed to scrape content from Firecrawl. Status: ${response.status} - ${errorBody}`);
+            console.error(`Firecrawl Search API error: ${response.statusText}`, errorBody);
+            throw new Error(`Failed to search with Firecrawl. Status: ${response.status} - ${errorBody}`);
         }
 
         const result = await response.json();
-        console.log("Firecrawl API Response:", JSON.stringify(result, null, 2));
+        console.log("Firecrawl Search API Response:", JSON.stringify(result, null, 2));
 
-        if (result.success && result.data && result.data.llm_extraction) {
+        if (result.success && result.data && result.data.length > 0) {
+             const topResult = result.data[0];
+            // The structured data is in llm_extraction, metadata is separate
             return {
                 success: true,
-                data: result.data.llm_extraction,
-                metadata: result.data.metadata
+                data: topResult.llm_extraction,
+                metadata: topResult.metadata
             };
         } else {
-             throw new Error(result.error || "Firecrawl returned an unsuccessful response or invalid data format.");
+             throw new Error(result.error || "Firecrawl returned an unsuccessful response or no data.");
         }
     } catch (error: any) {
-        console.error('A critical error occurred during the Firecrawl request:', error);
-        throw new Error(error.message || 'An unexpected error occurred during scraping.');
+        console.error('A critical error occurred during the Firecrawl search request:', error);
+        throw new Error(error.message || 'An unexpected error occurred during search.');
     }
 }
 
@@ -130,12 +95,7 @@ export const queryFlow = ai.defineFlow(
         console.log(`Starting query flow for: "${query}"`);
 
         try {
-            const relevantUrl = await searchWithBrave(query);
-            if (!relevantUrl) {
-                throw new Error(`Could not find a relevant URL for the query: "${query}"`);
-            }
-
-            const result = await scrapeWithFirecrawl(relevantUrl);
+            const result = await searchWithFirecrawl(query);
 
             if (result.success && result.data) {
                 const llm_extraction = result.data;
@@ -153,8 +113,9 @@ export const queryFlow = ai.defineFlow(
                 
                 return response;
             } else {
-                console.error("Query flow failed: No data from scrape.");
-                return {};
+                console.error("Query flow failed: No data from Firecrawl search.");
+                // This path should ideally not be taken due to error throwing in the search function
+                return {}; 
             }
         } catch (error: any) {
             console.error(`Query flow failed for "${query}":`, error);
