@@ -47,9 +47,9 @@ const scrapeUrlFlow = ai.defineFlow(
         });
 
         if (!response.ok) {
-            const errorBody = await response.text();
+            const errorBody = await response.json();
             console.error('Firecrawl API Error:', errorBody);
-            return { success: false, error: `Firecrawl API request failed with status ${response.status}. Body: ${errorBody}` };
+            return { success: false, error: errorBody.error || `Firecrawl API request failed with status ${response.status}.` };
         }
 
         const data = await response.json();
@@ -60,3 +60,4 @@ const scrapeUrlFlow = ai.defineFlow(
     }
   }
 );
+

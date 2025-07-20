@@ -58,10 +58,22 @@ export default function GalleryPage() {
             } else {
                 setImages([]);
                 console.error('No images found or invalid data format:', result?.error || result);
+                if(result?.error) {
+                    toast({
+                        title: 'Search Failed',
+                        description: result.error,
+                        variant: 'destructive',
+                    });
+                }
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch images:', error);
             setImages([]);
+            toast({
+                title: 'Error',
+                description: error.message || 'An unexpected error occurred.',
+                variant: 'destructive',
+            });
         } finally {
             setLoading(false);
         }
@@ -176,3 +188,4 @@ export default function GalleryPage() {
         </div>
     );
 }
+
