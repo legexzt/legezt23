@@ -8,6 +8,9 @@ import { useAuth } from "@/context/auth-context";
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Youtube, Music, Image as ImageIcon, FileText, Bot, ArrowRight, Rss, Mail, LogOut, ChevronRight } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function HomePage() {
   const { user, signOut } = useAuth();
