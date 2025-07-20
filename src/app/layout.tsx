@@ -1,18 +1,24 @@
+
 import type { Metadata } from 'next';
+import { Space_Grotesk } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import { MainSidebar } from '@/components/main-sidebar';
-import { PageHeader } from '@/components/page-header';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { AuthProvider } from '@/components/auth-provider';
+import { FirebaseProvider } from '@/components/firebase-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
 export const metadata: Metadata = {
   title: {
-    default: 'Legezt Lite',
-    template: '%s - Legezt Lite',
+    default: 'Legezt - Anime Visuals & News',
+    template: '%s - Legezt',
   },
-  description: 'A collection of powerful tools by Legezt.',
+  description: 'Premium Anime Visual & News Web App powered by Firebase and Firecrawl.',
 };
 
 export default function RootLayout({
@@ -22,29 +28,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn('font-sans antialiased', 'min-h-screen bg-background')}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SidebarProvider>
-            <MainSidebar />
-            <SidebarInset className="flex flex-col">
-              <PageHeader />
-              <main className="flex-1">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-          <Toaster />
-        </ThemeProvider>
+      <body className={cn('font-sans antialiased', spaceGrotesk.variable, 'min-h-screen bg-background')}>
+        <FirebaseProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </AuthProvider>
+        </FirebaseProvider>
       </body>
     </html>
   );

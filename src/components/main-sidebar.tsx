@@ -1,8 +1,12 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, Clapperboard, FileQuestion, Gamepad2, Home, Calculator, Music, Sparkles, Settings, User } from 'lucide-react';
+import { useAuth } from '@/components/auth-provider';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { Newspaper, ImageIcon, LogOut, Sparkles } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -11,21 +15,67 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
-  SidebarSeparator
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+
 
 const links = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/youtube-downloader', label: 'Downloader', icon: Music },
-  { href: '/visual-qa', label: 'Visual Q&A', icon: Bot },
-  { href: '/snake-game', label: 'Snake Game', icon: Gamepad2 },
-  { href: '/calculator', label: 'Calculator', icon: Calculator },
-  { href: '/pdf-analyzer', label: 'PDF Analyzer', icon: FileQuestion },
-  { href: '/notes-generator', label: 'Notes Generator', icon: Clapperboard },
+  { href: '/gallery', label: 'Gallery', icon: ImageIcon },
+  { href: '/news', label: 'News', icon: Newspaper },
 ];
+
+function UserNav() {
+    const { user } = useAuth();
+    
+    const handleLogout = async () => {
+        await signOut(auth);
+    };
+
+    if (!user) return null;
+
+    const initial = user.email ? user.email.charAt(0).toUpperCase() : '?';
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.photoURL || ''} alt={user.displayName || ''} />
+                        <AvatarFallback>{initial}</AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
+                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
 
 export function MainSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  if (!user) return null;
 
   return (
     <Sidebar>
@@ -51,22 +101,8 @@ export function MainSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarSeparator />
       <SidebarFooter>
-        <SidebarMenu>
-            <SidebarMenuItem>
-                <SidebarMenuButton href="/settings" tooltip="Settings" isActive={pathname === '/settings'}>
-                    <Settings className="h-5 w-5" />
-                    <span>Settings</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-             <SidebarMenuItem>
-                <SidebarMenuButton href="#" tooltip="Profile">
-                    <User className="h-5 w-5" />
-                    <span>Profile</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-        </SidebarMenu>
+        <UserNav />
       </SidebarFooter>
     </Sidebar>
   );
