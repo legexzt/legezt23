@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/auth-provider';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
-import { Newspaper, ImageIcon, LogOut, Sparkles } from 'lucide-react';
+import { Newspaper, ImageIcon, LogOut, Sparkles, Search } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -30,6 +30,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 const links = [
   { href: '/gallery', label: 'Legezterest', icon: ImageIcon },
+  { href: '/queries', label: 'Queries', icon: Search },
   { href: '/news', label: 'News', icon: Newspaper },
 ];
 
@@ -91,7 +92,7 @@ export function MainSidebar() {
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 href={link.href}
-                isActive={pathname === link.href}
+                isActive={pathname.startsWith(link.href)}
                 tooltip={link.label}
               >
                 <link.icon className="h-5 w-5" />

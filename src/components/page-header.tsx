@@ -14,9 +14,14 @@ export function PageHeader() {
   const [localQuery, setLocalQuery] = useState(query);
   const pathname = usePathname();
 
+  const isGalleryPage = pathname.startsWith('/gallery');
+  const showSearch = isGalleryPage; // Only show search bar on gallery page for now
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      setQuery(localQuery);
+      if (isGalleryPage) {
+        setQuery(localQuery);
+      }
     }
   };
   
@@ -27,17 +32,19 @@ export function PageHeader() {
       <div className="md:hidden">
         <SidebarTrigger />
       </div>
-      <div className="relative flex-1">
-         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-         <Input
-            type="search"
-            placeholder={pathname.includes('/gallery') ? "Search images..." : "Search news..."}
-            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-            value={localQuery}
-            onChange={(e) => setLocalQuery(e.target.value)}
-            onKeyDown={handleSearch}
-         />
-      </div>
+      {showSearch && (
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+              type="search"
+              placeholder="Search images..."
+              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+              value={localQuery}
+              onChange={(e) => setLocalQuery(e.target.value)}
+              onKeyDown={handleSearch}
+          />
+        </div>
+      )}
     </header>
   );
 }
