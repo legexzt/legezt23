@@ -43,19 +43,7 @@ const mockLyrics = [
   { time: "3:00", text: "We can make it through the night" },
 ];
 
-const getAudioUrl = (musicId) => {
-  const audioSamples = {
-    1: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
-    2: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
-    3: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
-    4: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
-    5: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3",
-    6: "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"
-  };
-  return audioSamples[musicId] || "https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3";
-};
-
-export default function MusicPlayer({ music, onBack, allMusic = [] }) {
+export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: any, onBack: () => void, allMusic: any[] }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -73,8 +61,7 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }) {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const audioUrl = getAudioUrl(music.id);
-    audio.src = audioUrl;
+    audio.src = music.audioUrl;
     audio.volume = volume / 100;
 
     const handleLoadedMetadata = () => {
@@ -116,7 +103,7 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }) {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('canplay', handleCanPlay);
     };
-  }, [music.id, volume, repeatMode]);
+  }, [music.id, music.audioUrl, volume, repeatMode]);
 
   const handlePlayPause = async () => {
     const audio = audioRef.current;
@@ -402,12 +389,6 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }) {
                 />
               </div>
               <span className="text-xs text-gray-400 w-8">{isMuted ? 0 : volume}%</span>
-            </div>
-
-            <div className="text-center">
-              <p className="text-xs text-gray-500">
-                🎵 Demo Mode: Real audio playback simulated for demonstration
-              </p>
             </div>
           </TabsContent>
 
