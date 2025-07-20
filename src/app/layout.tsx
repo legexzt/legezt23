@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import SharedLayout from "@/components/shared-layout";
 import { AuthProvider } from "@/context/auth-context";
+import SharedLayout from "@/components/shared-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

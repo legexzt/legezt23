@@ -28,6 +28,7 @@ export default function AnimatedBackground({ className = "" }: AnimatedBackgroun
   const getImageUrl = () => {
     // Use different placeholder dimensions to ensure the image visibly changes
     const dimensions = ['1920x1080', '1280x720', '1024x768', '1600x900', '1366x768'];
+    // The current state is 1-based, so subtract 1 for 0-based array index
     return `https://placehold.co/${dimensions[current - 1]}`;
   };
 
