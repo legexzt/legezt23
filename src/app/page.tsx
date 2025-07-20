@@ -1,4 +1,6 @@
 
+"use client";
+
 import LoginForm from "./login/login-form";
 import AnimatedBackground from "./AnimatedBackground";
 
