@@ -13,7 +13,6 @@ import {
   GoogleAuthProvider
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -73,13 +72,5 @@ export const useAuth = () => {
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
-  const router = useRouter();
-  
-  useEffect(() => {
-    if (context.user) {
-      router.push('/home');
-    }
-  }, [context.user, router]);
-
   return context;
 };

@@ -49,7 +49,7 @@ export default function LoginForm() {
         setPassword('');
       } else {
         await signIn(email, password);
-        router.push('/home');
+        // Redirect is handled by the useEffect hook
       }
     } catch (error: any) {
       console.error('Authentication error:', error);
@@ -66,7 +66,7 @@ export default function LoginForm() {
   const handleSocialLogin = async (provider: 'google') => {
     try {
         await signInWithGoogle();
-        router.push('/home');
+        // Redirect is handled by the useEffect hook
     } catch (error: any) {
         console.error('Social login error:', error);
         if (error.code === 'auth/popup-closed-by-user') {
