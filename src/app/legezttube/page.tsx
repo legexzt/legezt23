@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { getVideoInfo } from './actions';
 
 
 const suggestedVideos = [
@@ -657,28 +658,72 @@ const mockVideos = [
   }
 ];
 
+const FloatingParticles = () => {
+  const [particles, setParticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    const newParticles = Array.from({ length: 20 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      duration: 10 + Math.random() * 10,
+      delay: Math.random() * 5,
+      x: Math.random() * 100 - 50,
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  return (
+    <>
+      {particles.map((particle, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
+          style={{
+            left: particle.left,
+            top: particle.top,
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, particle.x, 0],
+            opacity: [0.3, 0.8, 0.3],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
+    </>
+  );
+};
+
+
 export default function LegeztTube() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const [filteredVideos, setFilteredVideos] = useState(mockVideos);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchedVideoInfo, setSearchedVideoInfo] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
     setIsSearching(true);
+    setError(null);
+    setSearchedVideoInfo(null);
     
-    setTimeout(() => {
-      if (query.trim() === '') {
-        setFilteredVideos(mockVideos);
-      } else {
-        const filtered = mockVideos.filter(video => 
-          video.title.toLowerCase().includes(query.toLowerCase()) ||
-          video.channel.toLowerCase().includes(query.toLowerCase())
-        );
-        setFilteredVideos(filtered);
-      }
+    try {
+      const videoInfo = await getVideoInfo(searchQuery);
+      setSearchedVideoInfo(videoInfo);
+    } catch (err: any) {
+      setError(err.message || "An error occurred while fetching video info.");
+    } finally {
       setIsSearching(false);
-    }, 800);
+    }
   };
 
   const handleVideoClick = (video: any) => {
@@ -695,29 +740,7 @@ export default function LegeztTube() {
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(120,119,198,0.15),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(255,119,198,0.1),transparent_50%)]"></div>
-        
-        {/* Floating particles */}
-        {Array.from({ length: 20 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full opacity-30"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              x: [0, Math.random() * 100 - 50, 0],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{
-              duration: 10 + Math.random() * 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
+        <FloatingParticles />
       </div>
 
       {/* Header */}
@@ -752,22 +775,23 @@ export default function LegeztTube() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              <div className="relative">
+              <form onSubmit={handleSearch} className="relative">
                 <Input
                   type="text"
-                  placeholder="Search videos, music, and more..."
+                  placeholder="Search or paste a YouTube link..."
                   value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-12 bg-gray-800/50 border-gray-700 rounded-full pl-6 pr-14 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
                 />
-                <motion.div
+                <motion.button
+                  type="submit"
                   className="absolute right-4 top-1/2 transform -translate-y-1/2"
                   animate={isSearching ? { rotate: 360 } : {}}
                   transition={{ duration: 1, repeat: isSearching ? Infinity : 0 }}
                 >
                   <Search className="w-5 h-5 text-gray-400" />
-                </motion.div>
-              </div>
+                </motion.button>
+              </form>
             </motion.div>
 
             {/* User Menu */}
@@ -800,18 +824,79 @@ export default function LegeztTube() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 relative z-10">
-        {/* Search Results Info */}
+        
+        {/* Searched Video Result */}
         <AnimatePresence>
-          {searchQuery && (
+          {isSearching && (
+             <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-6 text-center"
+            >
+              <p className="text-gray-400">Searching...</p>
+            </motion.div>
+          )}
+          {error && (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="mb-6"
+              className="mb-6 p-4 bg-red-900/50 text-red-300 border border-red-500/50 rounded-lg"
             >
-              <p className="text-gray-400">
-                {isSearching ? 'Searching...' : `Found ${filteredVideos.length} results for "${searchQuery}"`}
-              </p>
+              <p>Error: {error}</p>
+            </motion.div>
+          )}
+          {searchedVideoInfo && (
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -50, scale: 0.9 }}
+              className="mb-8"
+            >
+              <h2 className="text-2xl font-bold mb-4">Your Video:</h2>
+               <div
+                className="cursor-pointer group"
+                onClick={() => handleVideoClick({
+                    ...searchedVideoInfo,
+                    videoUrl: searchedVideoInfo.mp4Formats[0]?.url // Use the best quality mp4
+                })}
+              >
+                <Card className="bg-gray-800/50 border-gray-700/50 overflow-hidden backdrop-blur-sm hover:bg-gray-800/80 transition-all duration-300">
+                  <div className="relative aspect-video overflow-hidden">
+                    <motion.img
+                      src={searchedVideoInfo.thumbnail}
+                      alt={searchedVideoInfo.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      whileHover={{ scale: 1.1 }}
+                      width={500}
+                      height={300}
+                    />
+                    <motion.div
+                      className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center transition-all duration-300"
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                    >
+                      <motion.div
+                        className="w-16 h-16 bg-red-600/80 rounded-full flex items-center justify-center backdrop-blur-sm"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <Play className="w-6 h-6 text-white ml-1" />
+                      </motion.div>
+                    </motion.div>
+                    <div className="absolute bottom-2 right-2 bg-black/80 text-white text-sm px-2 py-1 rounded">
+                      {searchedVideoInfo.duration}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-white text-lg mb-2 line-clamp-2 group-hover:text-purple-300 transition-colors">
+                      {searchedVideoInfo.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm mb-1">{searchedVideoInfo.author}</p>
+                  </div>
+                </Card>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -898,19 +983,6 @@ export default function LegeztTube() {
             ))}
           </AnimatePresence>
         </motion.div>
-
-        {/* No Results */}
-        {filteredVideos.length === 0 && searchQuery && !isSearching && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-16"
-          >
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl text-gray-300 mb-2">No videos found</h3>
-            <p className="text-gray-500">Try searching with different keywords</p>
-          </motion.div>
-        )}
       </main>
 
       {/* Footer */}
@@ -932,3 +1004,4 @@ export default function LegeztTube() {
     </div>
   );
 }
+``` ye legetube ka search part hai work nhi karra me search karta hoon to filteredVideos list show hora but search result ni ara
