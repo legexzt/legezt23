@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ArrowLeft, 
   Heart, 
@@ -27,6 +27,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 
+interface MusicData {
+    id: number | string;
+    title: string;
+    artist: string;
+    album: string;
+    duration: string;
+    image: string;
+    audioUrl: string;
+    premium: boolean;
+}
+
 const mockLyrics = [
   { time: "0:00", text: "Yeah, I feel like I'm just missing something when you're gone" },
   { time: "0:15", text: "What we had was so real, so real, so real" },
@@ -43,7 +54,7 @@ const mockLyrics = [
   { time: "3:00", text: "We can make it through the night" },
 ];
 
-export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: any, onBack: () => void, allMusic: any[] }) {
+export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: MusicData, onBack: () => void, allMusic: MusicData[] }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -56,6 +67,14 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: a
   const [isLoading, setIsLoading] = useState(true);
   
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleNext = useCallback(() => {
+    const currentIndex = allMusic.findIndex(m => m.id === music.id);
+    const nextIndex = (currentIndex + 1) % allMusic.length;
+    console.log('Next song:', allMusic[nextIndex]);
+    // In a real app, you would call a function passed via props to change the song
+    // e.g., onNext(allMusic[nextIndex]);
+  }, [allMusic, music.id]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -103,7 +122,7 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: a
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('canplay', handleCanPlay);
     };
-  }, [music.id, music.audioUrl, volume, repeatMode]);
+  }, [music.id, music.audioUrl, volume, repeatMode, handleNext]);
 
   const handlePlayPause = async () => {
     const audio = audioRef.current;
@@ -151,14 +170,6 @@ export default function MusicPlayer({ music, onBack, allMusic = [] }: { music: a
             return newMuted;
         });
     }
-  };
-
-  const handleNext = () => {
-    const currentIndex = allMusic.findIndex(m => m.id === music.id);
-    const nextIndex = (currentIndex + 1) % allMusic.length;
-    console.log('Next song:', allMusic[nextIndex]);
-    // In a real app, you would call a function passed via props to change the song
-    // e.g., onNext(allMusic[nextIndex]);
   };
 
   const handlePrevious = () => {

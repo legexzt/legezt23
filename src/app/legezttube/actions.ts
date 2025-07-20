@@ -1,3 +1,4 @@
+
 "use server";
 
 import ytdl from 'ytdl-core';
@@ -37,10 +38,10 @@ export async function getVideoInfo(url: string) {
       mp4Formats: mp4Formats,
       mp3Formats: mp3Formats,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("YTDL Error:", error);
     // Provide a more user-friendly error message
-    if (error.statusCode === 410) {
+    if (error instanceof Error && (error as any).statusCode === 410) {
         throw new Error("The video is unavailable. It might have been deleted or made private.");
     }
     throw new Error("Could not retrieve video information. It may be age-restricted, private, or a live stream.");

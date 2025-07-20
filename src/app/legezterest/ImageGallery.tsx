@@ -2,14 +2,29 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Heart, Download, Share2 } from 'lucide-react';
+import { Heart, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import Masonry from 'react-responsive-masonry';
 
-export default function ImageGallery({ images, onImageSelect, onImageLike, likedImages, isLoading }) {
-  const [hoveredImage, setHoveredImage] = useState(null);
+interface Image {
+    id: string;
+    url: string;
+    title: string;
+    tags: string[];
+}
+
+interface ImageGalleryProps {
+    images: Image[];
+    onImageSelect: (image: Image) => void;
+    onImageLike: (id: string) => void;
+    likedImages: Set<string>;
+    isLoading: boolean;
+}
+
+export default function ImageGallery({ images, onImageSelect, onImageLike, likedImages, isLoading }: ImageGalleryProps) {
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
 
   if (isLoading) {
     return (

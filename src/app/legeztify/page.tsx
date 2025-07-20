@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Search, Play, Heart, Download, MoreHorizontal } from 'lucide-react';
+import { Search, Play, Heart, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,8 +10,20 @@ import { Badge } from '@/components/ui/badge';
 import MusicPlayer from './MusicPlayer';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 
+interface MusicData {
+  id: number | string;
+  title: string;
+  artist: string;
+  album: string;
+  duration: string;
+  image: string;
+  "data-ai-hint": string;
+  audioUrl: string;
+  premium: boolean;
+}
+
 // Mock data for music suggestions with audio URLs
-const mockMusic = [
+const mockMusic: MusicData[] = [
   {
     id: 1,
     title: "Blinding Lights",
@@ -105,7 +117,7 @@ const trendingArtists = [
 
 export default function LegeztifyPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedMusic, setSelectedMusic] = useState<any>(null);
+  const [selectedMusic, setSelectedMusic] = useState<MusicData | null>(null);
   const [filteredMusic, setFilteredMusic] = useState(mockMusic);
 
   const handleSearch = (value: string) => {
@@ -121,7 +133,7 @@ export default function LegeztifyPage() {
     }
   };
 
-  const handleMusicSelect = (music: any) => {
+  const handleMusicSelect = (music: MusicData) => {
     setSelectedMusic(music);
   };
 
@@ -271,7 +283,7 @@ export default function LegeztifyPage() {
 
           {filteredMusic.length === 0 && searchQuery && (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No music found for "{searchQuery}"</p>
+              <p className="text-gray-400 text-lg">No music found for &quot;{searchQuery}&quot;</p>
               <p className="text-gray-500 text-sm mt-2">Try searching for different artists or songs</p>
             </div>
           )}

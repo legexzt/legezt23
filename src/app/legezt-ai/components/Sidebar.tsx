@@ -4,10 +4,7 @@
 import React from 'react';
 import { 
   Plus, 
-  History, 
-  Settings,
-  X,
-  Bot
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

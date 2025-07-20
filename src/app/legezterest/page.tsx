@@ -2,14 +2,27 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Download, Heart, Share2, Grid, Filter, Sparkles, Zap, TrendingUp, Camera, Eye, ExternalLink } from 'lucide-react';
+import { Search, Grid, Filter, Sparkles, TrendingUp, Camera, Eye, Download, Heart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import ImageGallery from './ImageGallery';
 import ImageModal from './ImageModal';
+
+interface Image {
+  id: string;
+  url: string;
+  title: string;
+  author: string;
+  likes: number;
+  category: string;
+  tags: string[];
+  size: {
+    width: number;
+    height: number;
+  };
+}
 
 // Mock data for image categories
 const categories = [
@@ -31,7 +44,7 @@ const trendingSearches = [
 ];
 
 // Mock data for images
-const mockImages = [
+const mockImages: Image[] = [
   { id: '1', url: 'https://placehold.co/500x750', title: 'Crimson Tower', author: 'Alex Drone', likes: 1200, category: 'Architecture', tags: ['city', 'red', 'skyscraper', 'urban'], size: { width: 4000, height: 6000 } },
   { id: '2', url: 'https://placehold.co/500x400', title: 'Ocean Whisper', author: 'Maria Seal', likes: 2300, category: 'Nature', tags: ['sea', 'waves', 'blue', 'calm'], size: { width: 5000, height: 4000 } },
   { id: '3', url: 'https://placehold.co/500x600', title: 'Forest Light', author: 'John Arbor', likes: 850, category: 'Nature', tags: ['woods', 'sunbeam', 'green'], size: { width: 3000, height: 4000 } },
@@ -50,10 +63,10 @@ const mockImages = [
 export default function LegezterestPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [filteredImages, setFilteredImages] = useState<any[]>([]);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [filteredImages, setFilteredImages] = useState<Image[]>([]);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [likedImages, setLikedImages] = useState(new Set());
+  const [likedImages, setLikedImages] = useState(new Set<string>());
 
   useEffect(() => {
     // Simulate fetching images
@@ -99,7 +112,7 @@ export default function LegezterestPage() {
     }, 300);
   };
 
-  const handleImageSelect = (image: any) => {
+  const handleImageSelect = (image: Image) => {
     setSelectedImage(image);
   };
 
@@ -286,8 +299,7 @@ export default function LegezterestPage() {
             <Button
               onClick={() => {
                 setSearchQuery('');
-                setFilteredImages(mockImages);
-                setSelectedCategory('All');
+                handleSearch('');
               }}
               className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
             >

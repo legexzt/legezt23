@@ -1,13 +1,13 @@
 
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
   Settings, Download, ThumbsUp, ThumbsDown, 
   Share2, RotateCcw, RotateCw,
-  Search, Clock, Eye, Menu, User, Bell, MoreVertical
+  Search, Clock, Eye
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,11 @@ import { Separator } from '@/components/ui/separator';
 import { getVideoInfo } from './actions';
 import Image from 'next/image';
 
+interface VideoInfo {
+    title: string;
+    channel: string;
+    videoUrl: string;
+}
 
 const suggestedVideos = [
   {
@@ -53,7 +58,7 @@ const suggestedVideos = [
 ];
 
 interface VideoPlayerProps {
-  video: any;
+  video: VideoInfo;
   onClose: () => void;
 }
 
@@ -93,6 +98,24 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
       video.removeEventListener('ended', () => setIsPlaying(false));
     };
   }, []);
+  
+  const togglePlayPause = useCallback(() => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+          videoRef.current.play();
+          setIsPlaying(true);
+      } else {
+          videoRef.current.pause();
+          setIsPlaying(false);
+      }
+    }
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    if (videoRef.current) videoRef.current.muted = newMutedState;
+  }, [isMuted]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -111,7 +134,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isPlaying]);
+  }, [togglePlayPause, toggleMute]);
 
    useEffect(() => {
     if (videoRef.current) {
@@ -119,14 +142,6 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
     }
   }, [playbackSpeed]);
 
-
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) videoRef.current.pause();
-      else videoRef.current.play();
-      setIsPlaying(!isPlaying);
-    }
-  };
 
   const skipTime = (seconds: number) => {
     if (videoRef.current) videoRef.current.currentTime += seconds;
@@ -139,12 +154,6 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
     const isRightSide = clickX > rect.width / 2;
     if (isRightSide) skipTime(10);
     else skipTime(-10);
-  };
-
-  const toggleMute = () => {
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    if (videoRef.current) videoRef.current.muted = newMutedState;
   };
 
   const toggleFullscreen = () => {
@@ -394,7 +403,7 @@ const FloatingParticles = () => {
 
 export default function LegeztTube() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedVideo, setSelectedVideo] = useState<any>(null);
+  const [selectedVideo, setSelectedVideo] = useState<VideoInfo | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchedVideoInfo, setSearchedVideoInfo] = useState<any>(null);
@@ -466,7 +475,7 @@ export default function LegeztTube() {
           {searchedVideoInfo && (
             <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -50, scale: 0.9 }} className="mb-12">
               <h2 className="text-2xl font-bold mb-4">Your Video:</h2>
-               <div className="cursor-pointer group" onClick={() => handleVideoClick({ ...searchedVideoInfo, videoUrl: searchedVideoInfo.mp4Formats[0]?.url })}>
+               <div className="cursor-pointer group" onClick={() => handleVideoClick({ ...searchedVideoInfo, videoUrl: searchedVideoInfo.mp4Formats[0]?.url, channel: searchedVideoInfo.author })}>
                 <Card className="bg-card/80 border-border overflow-hidden backdrop-blur-sm hover:border-primary transition-all duration-300">
                   <div className="relative aspect-video overflow-hidden">
                     <motion.div whileHover={{ scale: 1.05 }} className="w-full h-full">

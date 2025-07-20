@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { Bot, User } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -38,7 +37,7 @@ const mockMessages: { [key: number]: Message[] } = {
   ],
 };
 
-export default function ChatInterface({ chatId, model }: ChatInterfaceProps) {
+export default function ChatInterface({ chatId }: ChatInterfaceProps) {
   const messages = mockMessages[chatId] || [];
 
   return (

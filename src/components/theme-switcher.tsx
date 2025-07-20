@@ -62,7 +62,7 @@ export function ThemeSwitcher({ onClose }: { onClose: () => void }) {
                   key={t.id}
                   whileHover={{ y: -5, scale: 1.03 }}
                   className="cursor-pointer"
-                  onClick={() => setTheme(t.id as any)}
+                  onClick={() => setTheme(t.id as 'theme-neocyber' | 'theme-starlight' | 'theme-crimson-flare')}
                 >
                   <Card className={`overflow-hidden transition-all duration-300 ${theme === t.id ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "hover:border-accent"}`}>
                     <div className="p-4">

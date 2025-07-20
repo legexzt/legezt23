@@ -2,14 +2,35 @@
 "use client";
 
 import React from 'react';
-import { X, Download, Heart, Share2, User, Tag, Info, Link as LinkIcon, Copy, Facebook, Twitter } from 'lucide-react';
+import { X, Download, Heart, User, Tag, Info, Copy, Facebook, Twitter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 
-export default function ImageModal({ image, isOpen, onClose, onLike, isLiked }) {
+interface Image {
+    id: string;
+    url: string;
+    title: string;
+    author: string;
+    tags: string[];
+    size: {
+        width: number;
+        height: number;
+    };
+    category: string;
+}
+
+interface ImageModalProps {
+    image: Image | null;
+    isOpen: boolean;
+    onClose: () => void;
+    onLike: () => void;
+    isLiked: boolean;
+}
+
+export default function ImageModal({ image, isOpen, onClose, onLike, isLiked }: ImageModalProps) {
   if (!image) return null;
 
   const handleDownload = () => {
@@ -21,7 +42,7 @@ export default function ImageModal({ image, isOpen, onClose, onLike, isLiked }) 
     document.body.removeChild(link);
   };
 
-  const handleShare = (platform) => {
+  const handleShare = (platform: 'facebook' | 'twitter') => {
     const url = encodeURIComponent(window.location.href);
     const text = encodeURIComponent(`Check out this amazing image: ${image.title}`);
     
@@ -124,7 +145,7 @@ export default function ImageModal({ image, isOpen, onClose, onLike, isLiked }) 
                   <Button onClick={() => handleShare('facebook')} variant="outline"><Facebook className="w-4 h-4 mr-2" />Facebook</Button>
                 </div>
                  <div className="relative">
-                    <input type="text" readOnly value={window.location.href} className="w-full bg-background border border-input rounded-md p-2 pr-10 text-sm text-muted-foreground" />
+                    <input type="text" readOnly value={typeof window !== 'undefined' ? window.location.href : ''} className="w-full bg-background border border-input rounded-md p-2 pr-10 text-sm text-muted-foreground" />
                     <Button variant="ghost" size="icon" onClick={handleCopyLink} className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground">
                       <Copy className="w-4 h-4" />
                     </Button>

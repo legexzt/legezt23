@@ -49,10 +49,10 @@ export default function LoginForm() {
       } else {
         await signIn(email, password);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Authentication error:', error);
       let errorMessage = 'An error occurred';
-      if (typeof error.message === 'string') {
+      if (error instanceof Error) {
         errorMessage = error.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.$/, '');
       }
       setMessage({ type: 'error', text: errorMessage });
