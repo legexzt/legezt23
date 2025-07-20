@@ -50,7 +50,7 @@ export default function LoginForm() {
         setPassword('');
       } else {
         await signIn(email, password);
-        // Redirect is handled by the useEffect above
+        router.push('/home');
       }
     } catch (error: any) {
       console.error('Authentication error:', error);
@@ -67,7 +67,7 @@ export default function LoginForm() {
   const handleSocialLogin = async (provider: 'google') => {
     try {
         await signInWithGoogle();
-        // Redirect is handled by the useEffect above
+        router.push('/home');
     } catch (error: any) {
         console.error('Social login error:', error);
         if (error.code === 'auth/popup-closed-by-user') {
@@ -87,12 +87,6 @@ export default function LoginForm() {
       <Card className="shadow-2xl border-2 border-[#00ffe7]/30 bg-black/60 backdrop-blur-lg text-white relative overflow-hidden">
         
         <CardHeader className="space-y-1 text-center pb-6 relative z-10">
-          <Link href="/home" passHref>
-             <motion.div whileHover={{ scale: 1.05 }} className="absolute top-4 left-4 cursor-pointer">
-                <Home className="w-6 h-6 text-[#00ffe7] hover:text-white transition-colors" />
-             </motion.div>
-          </Link>
-          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
