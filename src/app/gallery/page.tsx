@@ -10,7 +10,7 @@ import type { ScrapeResult } from '@/ai/flows/scrape-types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Download, Link as LinkIcon } from 'lucide-react';
+import { Download, Link as LinkIcon, Search } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useSearchStore } from '@/hooks/use-search';
 import { useToast } from '@/hooks/use-toast';
@@ -29,10 +29,11 @@ export default function GalleryPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const [images, setImages] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState<any | null>(null);
     const { query } = useSearchStore();
     const { toast } = useToast();
+    const [hasSearched, setHasSearched] = useState(false);
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -41,7 +42,13 @@ export default function GalleryPage() {
     }, [user, authLoading, router]);
 
     const fetchImages = async (searchQuery: string) => {
+        if (!searchQuery) {
+            setImages([]);
+            setLoading(false);
+            return;
+        }
         setLoading(true);
+        setHasSearched(true);
         try {
             const result: ScrapeResult = await scrapeUrl({
                 url: `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(searchQuery)}`,
@@ -97,34 +104,49 @@ export default function GalleryPage() {
         return <GallerySkeleton />;
     }
 
+    const renderContent = () => {
+        if (loading) {
+            return <GallerySkeleton />;
+        }
+        if (!hasSearched) {
+            return (
+                 <div className="text-center text-muted-foreground mt-16 flex flex-col items-center gap-4">
+                    <Search className="h-16 w-16" />
+                    <h2 className="text-2xl font-semibold">Search for images</h2>
+                    <p>Use the search bar above to find images on Legezterest.</p>
+                </div>
+            )
+        }
+        if (images.length > 0) {
+            return (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {images.map((image, index) => (
+                        <Card key={index} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
+                            <Image
+                                src={image.src}
+                                alt={image.alt || `Anime image ${index + 1}`}
+                                width={300}
+                                height={300}
+                                className="w-full h-full object-cover aspect-square"
+                                unoptimized
+                            />
+                        </Card>
+                    ))}
+                </div>
+            );
+        }
+        return (
+            <div className="text-center text-muted-foreground mt-16">
+                <p>No images found for &quot;{query}&quot;.</p>
+                <p>Try searching for something else.</p>
+            </div>
+        );
+    }
+
     return (
         <div className="container mx-auto py-8 px-4">
             <h1 className="text-4xl font-bold mb-8 capitalize">{query || 'Legezterest'}</h1>
-            {loading ? (
-                <GallerySkeleton />
-            ) : (
-                images.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {images.map((image, index) => (
-                            <Card key={index} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt || `Anime image ${index + 1}`}
-                                    width={300}
-                                    height={300}
-                                    className="w-full h-full object-cover aspect-square"
-                                    unoptimized
-                                />
-                            </Card>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center text-muted-foreground mt-16">
-                        <p>No images found for &quot;{query}&quot;.</p>
-                        <p>Try searching for something else.</p>
-                    </div>
-                )
-            )}
+            {renderContent()}
             
             <Dialog open={!!selectedImage} onOpenChange={(isOpen) => !isOpen && setSelectedImage(null)}>
                 <DialogContent className="max-w-4xl p-0">

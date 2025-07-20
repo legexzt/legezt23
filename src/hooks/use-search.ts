@@ -7,6 +7,6 @@ type SearchState = {
 };
 
 export const useSearchStore = create<SearchState>((set) => ({
-  query: 'anime aesthetic',
+  query: '',
   setQuery: (query) => set({ query }),
 }));
