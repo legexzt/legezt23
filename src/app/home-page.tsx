@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   // Animations for hero section elements and cards
   useEffect(() => {
     // Animate hero text after the navigation bar
@@ -41,15 +41,17 @@ export default function HomePage() {
             <span className="text-2xl font-extrabold tracking-tight text-white bg-[#222] px-3 py-1 rounded-lg shadow-md animate-pulse-logo">LEGEZT</span>
             <span className="text-xs text-[#00ffe7] font-semibold tracking-widest ml-2 hidden sm:block">Premium Tech in Space</span>
           </div>
-          <div className="hidden md:flex gap-6 text-white font-medium text-lg">
-            <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Home</Link>
+          <div className="hidden md:flex gap-6 text-white font-medium text-lg items-center">
+            <Link href="/home" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Home</Link>
             <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legeztify</Link>
             <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezterest</Link>
             <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">LegeztTube</Link>
             <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt PDF AI</Link>
             <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt AI</Link>
-            {!user && (
-              <Link href="/login" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Login</Link>
+            {user ? (
+                <button onClick={signOut} className="hover:text-[#ff4d4d] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#ff4d4d]">Sign Out</button>
+            ) : (
+              <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Login</Link>
             )}
           </div>
         </div>
@@ -64,12 +66,12 @@ export default function HomePage() {
           <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00ffe7] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00ffe7] hover:ring-offset-2 hover:ring-offset-black">
             <div className="relative mb-4 overflow-hidden rounded">
               <Image
-                src="https://placehold.co/320x128/00ffe7/ffffff?text=Video+Stream"
+                src="https://placehold.co/320x128"
                 alt="Stream Videos"
                 width={320}
                 height={128}
+                data-ai-hint="video stream"
                 className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-                unoptimized
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
                 <svg className="w-12 h-12 text-[#00ffe7] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,12 +87,12 @@ export default function HomePage() {
           <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00ff99] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00ff99] hover:ring-offset-2 hover:ring-offset-black">
             <div className="relative mb-4 overflow-hidden rounded">
               <Image
-                src="https://placehold.co/320x128/00ff99/ffffff?text=Music+Stream"
+                src="https://placehold.co/320x128"
                 alt="Listen to Music"
                 width={320}
                 height={128}
+                 data-ai-hint="music stream"
                 className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-                unoptimized
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
                 <svg className="w-12 h-12 text-[#00ff99] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,12 +109,12 @@ export default function HomePage() {
           <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#ffaa00] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#ffaa00] hover:ring-offset-2 hover:ring-offset-black">
             <div className="relative mb-4 overflow-hidden rounded">
               <Image
-                src="https://placehold.co/320x128/ffaa00/ffffff?text=Image+Download"
+                src="https://placehold.co/320x128"
                 alt="Download Images"
                 width={320}
                 height={128}
+                 data-ai-hint="abstract gallery"
                 className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-                unoptimized
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
                 <svg className="w-12 h-12 text-[#ffaa00] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,12 +130,12 @@ export default function HomePage() {
           <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00bfff] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00bfff] hover:ring-offset-2 hover:ring-offset-black">
             <div className="relative mb-4 overflow-hidden rounded">
               <Image
-                src="https://placehold.co/320x128/00bfff/ffffff?text=PDF+AI"
+                src="https://placehold.co/320x128"
                 alt="PDF AI Analysis"
                 width={320}
                 height={128}
+                 data-ai-hint="document analysis"
                 className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-                unoptimized
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
                 <svg className="w-12 h-12 text-[#00bfff] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -150,12 +152,12 @@ export default function HomePage() {
           <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#ff00cc] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#ff00cc] hover:ring-offset-2 hover:ring-offset-black">
             <div className="relative mb-4 overflow-hidden rounded">
               <Image
-                src="https://placehold.co/320x128/ff00cc/ffffff?text=AI+Chat"
+                src="https://placehold.co/320x128"
                 alt="AI Chat"
                 width={320}
                 height={128}
+                 data-ai-hint="ai chat"
                 className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-                unoptimized
               />
               <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
                 <svg className="w-12 h-12 text-[#ff00cc] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,7 +191,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-2 text-white text-sm text-center md:text-left animate-footer-enter">
             <span className="font-bold text-lg">Quick Links</span>
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300">Home</Link>
+              <Link href="/home" className="hover:text-[#00ffe7] transition-colors duration-300">Home</Link>
               <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300">Legeztify</Link>
               <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300">Legezterest</Link>
               <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300">LegeztTube</Link>

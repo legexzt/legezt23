@@ -42,7 +42,7 @@ export default function LoginForm() {
       } else {
         await signIn(email, password);
         setMessage({ type: 'success', text: 'Signed in successfully!' });
-        router.push('/');
+        router.push('/home');
       }
     } catch (error: any) {
       console.error('Authentication error:', error);
@@ -60,7 +60,7 @@ export default function LoginForm() {
     try {
         await signInWithGoogle();
         setMessage({ type: 'success', text: 'Signed in successfully!' });
-        router.push('/');
+        router.push('/home');
     } catch (error: any) {
         console.error('Social login error:', error);
         let errorMessage = 'An error occurred with social login.';
@@ -71,85 +71,13 @@ export default function LoginForm() {
     }
   }
 
-  // If user is logged in, show profile
-  if (user) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, rotateY: 180 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
-        <Card className="w-full max-w-md shadow-2xl border-0 bg-white dark:bg-gray-800/95 backdrop-blur-xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10"></div>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
-          
-          {Array.from({ length: 8 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-emerald-400 rounded-full"
-              style={{
-                left: `${20 + Math.random() * 60}%`,
-                top: `${20 + Math.random() * 60}%`,
-              }}
-              animate={{ y: [0, -20, 0], opacity: [0, 1, 0], scale: [0, 1, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
-            />
-          ))}
+  // If user is already logged in, redirect them away from login page
+  useEffect(() => {
+    if (user) {
+      router.push('/home');
+    }
+  }, [user, router]);
 
-          <CardHeader className="space-y-1 text-center pb-6 relative z-10">
-            <motion.div className="flex items-center justify-center mb-4" animate={{ rotate: [0, 360] }} transition={{ duration: 2, ease: "easeInOut" }}>
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <CheckCircle className="w-8 h-8 text-white" />
-              </div>
-            </motion.div>
-            
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-              <CardTitle className="text-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 mb-2">
-                Welcome Back!
-              </CardTitle>
-              <CardDescription className="text-muted-foreground">You are successfully logged in</CardDescription>
-            </motion.div>
-          </CardHeader>
-          
-          <CardContent className="space-y-6 relative z-10">
-            <motion.div className="text-center space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/50 dark:border-emerald-700/50 rounded-xl">
-                <div className="text-left space-y-2 pt-2">
-                  <motion.p className="flex items-center gap-2" whileHover={{ x: 5 }}>
-                    <Star className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <strong>Name:</strong> {user.displayName || 'N/A'}
-                  </motion.p>
-                  <motion.p className="flex items-center gap-2" whileHover={{ x: 5 }}>
-                    <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <strong>Email:</strong> {user.email}
-                  </motion.p>
-                  <motion.p className="flex items-center gap-2" whileHover={{ x: 5 }}>
-                    <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    <strong>User ID:</strong> {user.uid.substring(0, 10)}...
-                  </motion.p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="mb-3">
-              <Link href="/" passHref>
-                <Button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  <Home className="w-4 h-4 mr-2" />
-                  Go to Home Page
-                </Button>
-              </Link>
-            </motion.div>
-            
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button onClick={signOut} variant="outline" className="w-full">
-                Sign Out
-              </Button>
-            </motion.div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    );
-  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease: "easeOut" }} whileHover={{ y: -5 }}>
