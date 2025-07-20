@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, Clapperboard, FileQuestion, Gamepad2, Home, Calculator, Music, Sparkles } from 'lucide-react';
+import { Bot, Clapperboard, FileQuestion, Gamepad2, Home, Calculator, Music, Sparkles, Settings, User } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -10,6 +10,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
+  SidebarSeparator
 } from '@/components/ui/sidebar';
 
 const links = [
@@ -29,8 +31,8 @@ export function MainSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Link href="/" className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-accent" />
-            <h2 className="text-lg font-headline font-semibold">Legezt Lite</h2>
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h2 className="text-lg font-semibold">Legezt</h2>
         </Link>
       </SidebarHeader>
       <SidebarContent>
@@ -49,6 +51,23 @@ export function MainSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarSeparator />
+      <SidebarFooter>
+        <SidebarMenu>
+            <SidebarMenuItem>
+                <SidebarMenuButton href="#" tooltip="Settings">
+                    <Settings className="h-5 w-5" />
+                    <span>Settings</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+                <SidebarMenuButton href="#" tooltip="Profile">
+                    <User className="h-5 w-5" />
+                    <span>Profile</span>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
