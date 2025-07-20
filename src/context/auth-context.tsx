@@ -9,10 +9,12 @@ import {
   signInWithEmailAndPassword, 
   signOut as firebaseSignOut,
   updateProfile,
-  signInWithPopup,
-  GoogleAuthProvider
+  signInWithRedirect,
+  GoogleAuthProvider,
+  getRedirectResult
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -36,6 +38,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setLoading(false);
     });
+
+    // Check for redirect result
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          // This is the signed-in user
+          setUser(result.user);
+        }
+      }).catch((error) => {
+        console.error("Error during redirect result", error);
+      }).finally(() => {
+        setLoading(false);
+      });
+
     return () => unsubscribe();
   }, []);
 
@@ -51,18 +67,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
+    setLoading(true);
+    await signInWithRedirect(auth, googleProvider);
   }
 
   const signOut = async () => {
     await firebaseSignOut(auth);
+    setUser(null);
   };
 
   const value = { user, loading, signUp, signIn, signOut, signInWithGoogle };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
