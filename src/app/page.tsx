@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Bot, Clapperboard, FileQuestion, Gamepad2, Calculator, Music, Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const features = [
   {
@@ -93,7 +94,7 @@ export default function Home() {
                     <p className="text-lg md:text-xl text-white/80 max-w-lg">
                       A suite of powerful, AI-driven tools designed to streamline your digital tasks. From media downloading to complex analysis, Legezt Lite has you covered.
                     </p>
-                    <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+                    <Button asChild size="lg" className={cn("bg-primary hover:bg-primary/90 text-primary-foreground font-semibold", "shadow-[0_0_15px_hsl(var(--primary))]")}>
                       <Link href="/youtube-downloader">
                         Explore Tools <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
@@ -118,7 +119,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold mb-8">Projects</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature) => (
-              <Card key={feature.href} className="flex flex-col bg-card hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden">
+              <Card key={feature.href} className="flex flex-col bg-card hover:shadow-xl transition-shadow duration-300 rounded-lg overflow-hidden hover:shadow-[0_0_25px_hsl(var(--primary))]">
                 <CardHeader className="p-0">
                   <Image
                       src={feature.image.src}

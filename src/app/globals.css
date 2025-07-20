@@ -23,7 +23,6 @@
     --border: 240 6% 90%;
     --input: 240 6% 90%;
     --ring: 224 71.4% 4.1%;
-    --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -59,13 +58,13 @@
   }
 
   .theme-forest {
-    --background: 120 15% 15%;
+    --background: 120 25% 15%;
     --foreground: 120 10% 95%;
     --card: 120 15% 20%;
     --card-foreground: 120 10% 95%;
     --popover: 120 15% 15%;
     --popover-foreground: 120 10% 95%;
-    --primary: 100 60% 50%;
+    --primary: 100 80% 60%;
     --primary-foreground: 100 10% 15%;
     --secondary: 120 10% 25%;
     --secondary-foreground: 120 10% 95%;
@@ -77,17 +76,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 120 10% 30%;
     --input: 120 10% 30%;
-    --ring: 100 60% 50%;
+    --ring: 100 80% 60%;
   }
 
   .theme-ocean {
-    --background: 210 40% 98%;
+    --background: 210 50% 98%;
     --foreground: 215 30% 25%;
     --card: 210 40% 100%;
     --card-foreground: 215 30% 25%;
     --popover: 210 40% 100%;
     --popover-foreground: 215 30% 25%;
-    --primary: 200 80% 55%;
+    --primary: 200 90% 60%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 30% 94%;
     --secondary-foreground: 215 30% 25%;
@@ -99,17 +98,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 210 30% 90%;
     --input: 210 30% 90%;
-    --ring: 200 80% 55%;
+    --ring: 200 90% 60%;
   }
 
   .theme-sunset {
-    --background: 25 20% 12%;
+    --background: 25 30% 12%;
     --foreground: 30 20% 92%;
     --card: 25 20% 18%;
     --card-foreground: 30 20% 92%;
     --popover: 25 20% 12%;
     --popover-foreground: 30 20% 92%;
-    --primary: 30 90% 60%;
+    --primary: 30 100% 65%;
     --primary-foreground: 30 20% 12%;
     --secondary: 25 15% 25%;
     --secondary-foreground: 30 20% 92%;
@@ -117,21 +116,21 @@
     --muted-foreground: 30 15% 65%;
     --accent: 25 15% 30%;
     --accent-foreground: 30 20% 92%;
-    --destructive: 0 75% 55%;
+    --destructive: 0 80% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 25 15% 30%;
     --input: 25 15% 30%;
-    --ring: 30 90% 60%;
+    --ring: 30 100% 65%;
   }
   
   .theme-lavender {
-    --background: 250 50% 98%;
+    --background: 250 60% 98%;
     --foreground: 255 15% 20%;
     --card: 250 50% 100%;
     --card-foreground: 255 15% 20%;
     --popover: 250 50% 100%;
     --popover-foreground: 255 15% 20%;
-    --primary: 250 65% 60%;
+    --primary: 250 75% 70%;
     --primary-foreground: 250 50% 98%;
     --secondary: 250 40% 95%;
     --secondary-foreground: 255 15% 20%;
@@ -143,29 +142,29 @@
     --destructive-foreground: 0 0% 100%;
     --border: 250 40% 90%;
     --input: 250 40% 90%;
-    --ring: 250 65% 60%;
+    --ring: 250 75% 70%;
   }
 
   .theme-matrix {
-    --background: 130 15% 10%;
-    --foreground: 130 80% 70%;
+    --background: 130 20% 10%;
+    --foreground: 130 90% 75%;
     --card: 130 15% 15%;
-    --card-foreground: 130 80% 70%;
+    --card-foreground: 130 90% 75%;
     --popover: 130 15% 10%;
-    --popover-foreground: 130 80% 70%;
-    --primary: 130 100% 50%;
+    --popover-foreground: 130 90% 75%;
+    --primary: 130 100% 55%;
     --primary-foreground: 130 15% 10%;
     --secondary: 130 10% 20%;
-    --secondary-foreground: 130 80% 70%;
+    --secondary-foreground: 130 90% 75%;
     --muted: 130 10% 20%;
     --muted-foreground: 130 40% 50%;
     --accent: 130 10% 25%;
-    --accent-foreground: 130 80% 70%;
+    --accent-foreground: 130 90% 75%;
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 130 10% 25%;
     --input: 130 10% 25%;
-    --ring: 130 100% 50%;
+    --ring: 130 100% 55%;
   }
 
   .theme-rose {
@@ -175,7 +174,7 @@
     --card-foreground: 350 30% 25%;
     --popover: 350 100% 100%;
     --popover-foreground: 350 30% 25%;
-    --primary: 340 80% 60%;
+    --primary: 340 90% 70%;
     --primary-foreground: 350 100% 99%;
     --secondary: 350 60% 96%;
     --secondary-foreground: 350 30% 25%;
@@ -187,17 +186,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 350 60% 92%;
     --input: 350 60% 92%;
-    --ring: 340 80% 60%;
+    --ring: 340 90% 70%;
   }
 
   .theme-sky {
-    --background: 200 30% 15%;
+    --background: 200 40% 15%;
     --foreground: 200 20% 90%;
     --card: 200 30% 20%;
     --card-foreground: 200 20% 90%;
     --popover: 200 30% 15%;
     --popover-foreground: 200 20% 90%;
-    --primary: 190 80% 65%;
+    --primary: 190 90% 70%;
     --primary-foreground: 200 30% 15%;
     --secondary: 200 25% 25%;
     --secondary-foreground: 200 20% 90%;
@@ -209,17 +208,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 200 25% 30%;
     --input: 200 25% 30%;
-    --ring: 190 80% 65%;
+    --ring: 190 90% 70%;
   }
   
   .theme-coffee {
-    --background: 30 15% 95%;
+    --background: 30 25% 95%;
     --foreground: 30 10% 25%;
     --card: 30 15% 100%;
     --card-foreground: 30 10% 25%;
     --popover: 30 15% 100%;
     --popover-foreground: 30 10% 25%;
-    --primary: 35 40% 40%;
+    --primary: 35 50% 45%;
     --primary-foreground: 30 15% 95%;
     --secondary: 30 20% 92%;
     --secondary-foreground: 30 10% 25%;
@@ -231,17 +230,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 30 20% 88%;
     --input: 30 20% 88%;
-    --ring: 35 40% 40%;
+    --ring: 35 50% 45%;
   }
   
   .theme-slate {
-    --background: 220 15% 20%;
+    --background: 220 20% 20%;
     --foreground: 220 10% 90%;
     --card: 220 15% 25%;
     --card-foreground: 220 10% 90%;
     --popover: 220 15% 20%;
     --popover-foreground: 220 10% 90%;
-    --primary: 210 30% 60%;
+    --primary: 210 40% 65%;
     --primary-foreground: 220 15% 15%;
     --secondary: 220 10% 30%;
     --secondary-foreground: 220 10% 90%;
@@ -249,11 +248,11 @@
     --muted-foreground: 220 10% 60%;
     --accent: 220 10% 35%;
     --accent-foreground: 220 10% 90%;
-    --destructive: 0 50% 50%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 10% 35%;
     --input: 220 10% 35%;
-    --ring: 210 30% 60%;
+    --ring: 210 40% 65%;
   }
 
   .theme-candy {
@@ -263,7 +262,7 @@
     --card-foreground: 345 30% 30%;
     --popover: 340 100% 100%;
     --popover-foreground: 345 30% 30%;
-    --primary: 330 90% 65%;
+    --primary: 330 100% 70%;
     --primary-foreground: 340 100% 98%;
     --secondary: 340 80% 95%;
     --secondary-foreground: 345 30% 30%;
@@ -275,7 +274,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 340 80% 92%;
     --input: 340 80% 92%;
-    --ring: 330 90% 65%;
+    --ring: 330 100% 70%;
   }
 }
 
@@ -285,5 +284,17 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-size: 200% 200%;
+    animation: move-bg 15s ease-in-out infinite;
   }
+  .bg-gradient-to-b {
+    background-size: 100% 100%;
+    animation: none;
+  }
+}
+
+@layer components {
+    .btn-primary {
+        @apply shadow-[0_0_15px_hsl(var(--primary))];
+    }
 }
