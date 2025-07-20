@@ -77,7 +77,7 @@ async function scrapeWithFirecrawl(url: string): Promise<any> {
                         properties: {
                            summary: { type: "string" },
                            bulletPoints: { type: "array", items: { type: "string" } },
-                           table: { type: "array", items: { type: "object", "minItems": 1, properties: {} } },
+                           table: { type: "array", items: { type: "object" } },
                            links: { type: "array", items: { type: "object", properties: { title: { type: "string" }, url: { type: "string" }}}}
                         },
                         required: ["summary"]

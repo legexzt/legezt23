@@ -107,10 +107,10 @@ export default function QueriesPage() {
                     <Card>
                         <CardHeader>
                             <div className="flex items-center gap-2 mb-2">
-                                {result.favicon && <Image src={result.favicon} alt="favicon" width={16} height={16} />}
+                                {result.favicon && <Image src={result.favicon} alt="favicon" width={16} height={16} unoptimized />}
                                 <CardTitle>{result.title}</CardTitle>
                             </div>
-                            <CardDescription>Source: <a href={result.sourceURL} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">{result.sourceURL}</a></CardDescription>
+                            {result.sourceURL && <CardDescription>Source: <a href={result.sourceURL} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">{result.sourceURL}</a></CardDescription>}
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {result.summary && (
@@ -127,9 +127,9 @@ export default function QueriesPage() {
                                     </ul>
                                 </div>
                             )}
-                            {result.table && result.table.length > 0 && (
+                            {result.table && result.table.length > 0 && Array.isArray(result.table) && Object.keys(result.table[0]).length > 0 && (
                                 <div>
-                                    <h3 className="font-semibold text-lg mb-2">Table</h3>
+                                    <h3 className="font-semibold text-lg mb-2">Data Table</h3>
                                     <div className="overflow-x-auto border rounded-lg">
                                         <table className="min-w-full text-sm">
                                             <thead className="bg-muted">
@@ -140,7 +140,7 @@ export default function QueriesPage() {
                                             <tbody>
                                                 {result.table.map((row, index) => (
                                                     <tr key={index} className="border-t">
-                                                        {Object.values(row).map((value, i) => <td key={i} className="p-2 text-muted-foreground">{value}</td>)}
+                                                        {Object.values(row).map((value: any, i) => <td key={i} className="p-2 text-muted-foreground">{typeof value === 'object' ? JSON.stringify(value) : value}</td>)}
                                                     </tr>
                                                 ))}
                                             </tbody>
