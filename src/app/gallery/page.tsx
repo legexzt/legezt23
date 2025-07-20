@@ -12,6 +12,8 @@ import { Download, Link as LinkIcon, Search } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useSearchStore } from '@/hooks/use-search';
 import { useToast } from '@/hooks/use-toast';
+import type { SearchResult } from '@/ai/flows/search-types';
+import { searchFlow } from '@/ai/flows/search';
 
 function GallerySkeleton() {
     return (
@@ -23,21 +25,12 @@ function GallerySkeleton() {
     );
 }
 
-type ImageType = {
-  id: string;
-  author: string;
-  width: number;
-  height: number;
-  url: string;
-  download_url: string;
-};
-
 export default function GalleryPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
-    const [images, setImages] = useState<ImageType[]>([]);
+    const [images, setImages] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
+    const [selectedImage, setSelectedImage] = useState<SearchResult | null>(null);
     const { query } = useSearchStore();
     const { toast } = useToast();
     const [hasSearched, setHasSearched] = useState(false);
@@ -57,14 +50,19 @@ export default function GalleryPage() {
         }
         setLoading(true);
         setHasSearched(true);
+        setImages([]); // Clear previous results
+
         try {
-            // Using a more reliable image provider instead of scraping
-            const response = await fetch('https://picsum.photos/v2/list?page=1&limit=50');
-            if (!response.ok) {
-                throw new Error('Failed to fetch images from the provider.');
+            const result = await searchFlow({ query: searchQuery });
+            if (result && result.length > 0) {
+                setImages(result);
+            } else {
+                 toast({
+                    title: 'No Images Found',
+                    description: `Could not find images for "${searchQuery}". Please try another search.`,
+                    variant: 'destructive',
+                });
             }
-            const data: ImageType[] = await response.json();
-            setImages(data);
         } catch (error: any) {
             console.error('Failed to fetch images:', error);
             setImages([]);
@@ -80,7 +78,6 @@ export default function GalleryPage() {
 
     const handleDownload = async (imageUrl: string, imageName: string = 'legezterest-image.jpg') => {
         try {
-            // Use a proxy or server-side fetch if CORS issues persist
             const response = await fetch(imageUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -95,7 +92,7 @@ export default function GalleryPage() {
             console.error('Error downloading image:', error);
             toast({
                 title: 'Download Error',
-                description: 'Could not download the image.',
+                description: 'Could not download the image. The source might be blocking it.',
                 variant: 'destructive',
             });
         }
@@ -138,14 +135,18 @@ export default function GalleryPage() {
             return (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {images.map((image, index) => (
-                        <Card key={image.id} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
+                        <Card key={`${image.src}-${index}`} className="overflow-hidden cursor-pointer relative group">
                             <Image
-                                src={image.download_url}
-                                alt={`Photo by ${image.author}`}
+                                src={image.src}
+                                alt={image.alt || `Image from ${image.source}`}
                                 width={300}
                                 height={300}
                                 className="w-full h-full object-cover aspect-square"
+                                onClick={() => setSelectedImage(image)}
                             />
+                            <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                {image.source}
+                            </div>
                         </Card>
                     ))}
                 </div>
@@ -153,7 +154,7 @@ export default function GalleryPage() {
         }
         return (
             <div className="text-center text-muted-foreground mt-16">
-                <p>No images found for &quot;{query}&quot;.</p>
+                 <p>No images found for &quot;{query}&quot;.</p>
                 <p>Try searching for something else.</p>
             </div>
         );
@@ -169,19 +170,22 @@ export default function GalleryPage() {
                     {selectedImage && (
                         <div className="relative">
                             <Image 
-                                src={selectedImage.download_url} 
-                                alt={`Photo by ${selectedImage.author}`}
+                                src={selectedImage.src} 
+                                alt={selectedImage.alt || `Image from ${selectedImage.source}`}
                                 width={1200}
                                 height={1200}
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
                             />
                             <div className="absolute top-2 right-2 flex gap-2">
-                               <Button size="icon" variant="secondary" onClick={() => selectedImage && handleCopyLink(selectedImage.download_url)}>
+                               <Button size="icon" variant="secondary" onClick={() => selectedImage && handleCopyLink(selectedImage.src)}>
                                    <LinkIcon className="h-4 w-4" />
                                </Button>
-                               <Button size="icon" variant="secondary" onClick={() => handleDownload(selectedImage.download_url, `photo-${selectedImage.id}-by-${selectedImage.author}.jpg`)}>
+                               <Button size="icon" variant="secondary" onClick={() => handleDownload(selectedImage.src, `${selectedImage.source}-${query}-${selectedImage.src.split('/').pop()}.jpg`)}>
                                    <Download className="h-4 w-4" />
                                </Button>
+                            </div>
+                            <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 text-sm rounded-md">
+                                Source: {selectedImage.source}
                             </div>
                         </div>
                     )}
@@ -190,5 +194,6 @@ export default function GalleryPage() {
 
         </div>
     );
+}
 
     
