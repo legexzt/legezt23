@@ -144,7 +144,7 @@ export const queryFlow = ai.defineFlow(
                 const response: QueryResult = {
                     title: metadata?.title,
                     summary: llm_extraction?.summary,
-                    bulletPoints: ll_extraction?.bulletPoints,
+                    bulletPoints: llm_extraction?.bulletPoints,
                     table: llm_extraction?.table,
                     links: llm_extraction?.links,
                     favicon: metadata?.favicon,
