@@ -5,7 +5,46 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import type { QueryInput, QueryResult } from './query-types';
+import type { QueryResult } from './query-types';
+
+async function searchWithBrave(query: string): Promise<string | null> {
+    const braveApiKey = process.env.BRAVE_SEARCH_API_KEY;
+    if (!braveApiKey) {
+        console.error("BRAVE_SEARCH_API_KEY is not set.");
+        throw new Error("Server configuration error: Missing Brave Search API key.");
+    }
+    const searchUrl = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}`;
+    
+    try {
+        const response = await fetch(searchUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-Subscription-Token': braveApiKey,
+            },
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            console.error(`Brave Search API error: ${response.statusText}`, errorBody);
+            throw new Error(`Failed to search with Brave. Status: ${response.status} - ${errorBody}`);
+        }
+
+        const result = await response.json();
+        if (result.web && result.web.results && result.web.results.length > 0) {
+            const topUrl = result.web.results[0].url;
+            console.log(`Found top URL with Brave Search: ${topUrl}`);
+            return topUrl;
+        } else {
+            console.log("Brave Search returned no results.");
+            return null;
+        }
+    } catch (error: any) {
+        console.error('A critical error occurred during the Brave Search request:', error);
+        throw new Error(error.message || 'An unexpected error occurred during web search.');
+    }
+}
+
 
 async function scrapeWithFirecrawl(url: string): Promise<any> {
     const firecrawlApiUrl = 'https://api.firecrawl.dev/v0/scrape';
@@ -87,12 +126,15 @@ export const queryFlow = ai.defineFlow(
         })
     },
     async ({ query }) => {
-        // Use a reliable search engine to find the most relevant link
-        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        console.log(`Starting query flow for: "${query}" by searching ${searchUrl}`);
+        console.log(`Starting query flow for: "${query}"`);
 
         try {
-            const result = await scrapeWithFirecrawl(searchUrl);
+            const relevantUrl = await searchWithBrave(query);
+            if (!relevantUrl) {
+                throw new Error(`Could not find a relevant URL for the query: "${query}"`);
+            }
+
+            const result = await scrapeWithFirecrawl(relevantUrl);
 
             if (result.success && result.data) {
                 const llm_extraction = result.data;
