@@ -46,7 +46,11 @@ export default function LoginForm() {
       }
     } catch (error: any) {
       console.error('Authentication error:', error);
-      setMessage({ type: 'error', text: error.message || 'An error occurred' });
+      let errorMessage = 'An error occurred';
+      if (typeof error.message === 'string') {
+        errorMessage = error.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.$/, '');
+      }
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +63,11 @@ export default function LoginForm() {
         router.push('/');
     } catch (error: any) {
         console.error('Social login error:', error);
-        setMessage({ type: 'error', text: error.message || 'An error occurred with social login.'});
+        let errorMessage = 'An error occurred with social login.';
+        if (typeof error.message === 'string') {
+            errorMessage = error.message.replace('Firebase: ', '').replace(/ \(auth\/.*\)\.$/, '');
+        }
+        setMessage({ type: 'error', text: errorMessage});
     }
   }
 
@@ -71,7 +79,7 @@ export default function LoginForm() {
         animate={{ opacity: 1, scale: 1, rotateY: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Card className="w-full max-w-md shadow-2xl border-0 bg-gradient-to-br from-white/95 via-white/90 to-white/95 dark:from-gray-800/95 dark:via-gray-900/90 dark:to-black/95 backdrop-blur-xl relative overflow-hidden">
+        <Card className="w-full max-w-md shadow-2xl border-0 bg-white dark:bg-gray-800/95 backdrop-blur-xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
           
@@ -96,7 +104,7 @@ export default function LoginForm() {
             </motion.div>
             
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-              <CardTitle className="text-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent mb-2">
+              <CardTitle className="text-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 mb-2">
                 Welcome Back!
               </CardTitle>
               <CardDescription className="text-muted-foreground">You are successfully logged in</CardDescription>
@@ -105,7 +113,7 @@ export default function LoginForm() {
           
           <CardContent className="space-y-6 relative z-10">
             <motion.div className="text-center space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
-              <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border border-emerald-200/50 dark:border-emerald-700/50 rounded-xl">
+              <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/50 dark:border-emerald-700/50 rounded-xl">
                 <div className="text-left space-y-2 pt-2">
                   <motion.p className="flex items-center gap-2" whileHover={{ x: 5 }}>
                     <Star className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -133,7 +141,7 @@ export default function LoginForm() {
             </motion.div>
             
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button onClick={signOut} variant="outline" className="w-full border-2 border-emerald-200 hover:border-emerald-300 hover:bg-emerald-50 dark:border-emerald-700 dark:hover:bg-emerald-900/40 transition-all duration-300">
+              <Button onClick={signOut} variant="outline" className="w-full">
                 Sign Out
               </Button>
             </motion.div>
@@ -145,7 +153,7 @@ export default function LoginForm() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease: "easeOut" }} whileHover={{ y: -5 }}>
-      <Card className="w-full max-w-md shadow-2xl border-0 bg-gradient-to-br from-white/95 via-white/90 to-white/95 dark:from-gray-800/95 dark:via-gray-900/90 dark:to-black/95 backdrop-blur-xl relative overflow-hidden">
+      <Card className="w-full max-w-md shadow-2xl border-0 bg-white dark:bg-gray-800/95 backdrop-blur-xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         
@@ -170,7 +178,7 @@ export default function LoginForm() {
           </motion.div>
           
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
-            <CardTitle className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            <CardTitle className="text-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 mb-2">
               Legezt Login
             </CardTitle>
             <CardDescription className="text-muted-foreground">
@@ -188,8 +196,8 @@ export default function LoginForm() {
                 exit={{ opacity: 0, x: 20, scale: 0.9 }}
                 className={`p-4 rounded-xl text-sm border-2 ${
                   message.type === 'success' 
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border-green-200/50 dark:from-green-900/30 dark:to-emerald-900/30 dark:text-green-300 dark:border-green-700/50' 
-                    : 'bg-gradient-to-r from-red-50 to-pink-50 text-red-700 border-red-200/50 dark:from-red-900/30 dark:to-pink-900/30 dark:text-red-300 dark:border-red-700/50'
+                    ? 'bg-green-50 text-green-700 border-green-200/50 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700/50' 
+                    : 'bg-red-50 text-red-700 border-red-200/50 dark:bg-red-900/30 dark:text-red-300 dark:border-red-700/50'
                 }`}
               >
                 {message.text}
@@ -246,13 +254,13 @@ export default function LoginForm() {
           </form>
           
           <div className="relative">
-            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">Or continue with</span></div>
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-white dark:bg-gray-800 px-2 text-muted-foreground">Or continue with</span></div>
           </div>
           
           <div className="grid grid-cols-1 gap-3">
             <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="outline" className="w-full border-2 hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-300" type="button" onClick={() => handleSocialLogin('google')}>
+              <Button variant="outline" className="w-full" type="button" onClick={() => handleSocialLogin('google')}>
                 <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
                 Google
               </Button>
