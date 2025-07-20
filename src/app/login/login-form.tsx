@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, User as UserIcon, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
 
@@ -68,7 +68,7 @@ export default function LoginForm() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease: "easeOut" }} className="w-full max-w-md">
-      <Card className="shadow-2xl border-2 border-[#00ffe7]/30 bg-black/60 backdrop-blur-lg text-white relative overflow-hidden">
+      <Card className="shadow-2xl border border-border bg-card/80 backdrop-blur-lg text-foreground relative overflow-hidden">
         
         <CardHeader className="space-y-1 text-center pb-6 relative z-10">
           <motion.div
@@ -76,10 +76,10 @@ export default function LoginForm() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            <CardTitle className="text-5xl font-extrabold tracking-widest" style={{ textShadow: '0 0 10px #00ffe7, 0 0 20px #00ffe7' }}>
+            <CardTitle className="text-5xl font-extrabold tracking-widest text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
               LEGEZT
             </CardTitle>
-            <CardDescription className="text-gray-300 pt-2">
+            <CardDescription className="text-muted-foreground pt-2">
               {isSignUp ? 'Create a new account' : 'Welcome back! Sign in to continue'}
             </CardDescription>
           </motion.div>
@@ -108,9 +108,10 @@ export default function LoginForm() {
               {isSignUp && (
                 <motion.div initial={{ opacity: 0, height: 0, y: -20 }} animate={{ opacity: 1, height: "auto", y: 0 }} exit={{ opacity: 0, height: 0, y: -20 }} transition={{ duration: 0.3 }} className="space-y-2">
                   <Label htmlFor="name">Name</Label>
-                  <motion.div whileFocus={{ scale: 1.02 }}>
-                    <Input id="name" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} required className="bg-black/40 border-[#00ffe7]/50 focus:border-[#00ffe7]" />
-                  </motion.div>
+                   <motion.div className="relative" whileFocus={{ scale: 1.02 }}>
+                     <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
+                     <Input id="name" type="text" placeholder="Your full name" value={name} onChange={(e) => setName(e.target.value)} required className="pl-10 bg-background/50 border-border focus:border-primary" />
+                   </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -118,17 +119,17 @@ export default function LoginForm() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <motion.div className="relative" whileFocus={{ scale: 1.02 }}>
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 z-10" />
-                <Input id="email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="pl-10 bg-black/40 border-[#00ffe7]/50 focus:border-[#00ffe7]" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
+                <Input id="email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="pl-10 bg-background/50 border-border focus:border-primary" />
               </motion.div>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <motion.div className="relative" whileFocus={{ scale: 1.02 }}>
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 z-10" />
-                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required className="pl-10 pr-10 bg-black/40 border-[#00ffe7]/50 focus:border-[#00ffe7]" />
-                <motion.button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white z-10" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 z-10" />
+                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required className="pl-10 pr-10 bg-background/50 border-border focus:border-primary" />
+                <motion.button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground z-10" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </motion.button>
               </motion.div>
@@ -137,27 +138,28 @@ export default function LoginForm() {
             {!isSignUp && (
               <div className="flex items-center justify-between">
                 <motion.div className="flex items-center space-x-2" whileHover={{ scale: 1.02 }}>
-                  <Checkbox id="remember" checked={rememberMe} onCheckedChange={(checked) => setRememberMe(checked as boolean)} className="border-gray-400 data-[state=checked]:bg-[#00ffe7] data-[state=checked]:text-black" />
-                  <Label htmlFor="remember" className="text-sm text-gray-300 cursor-pointer">Remember me</Label>
+                  <Checkbox id="remember" checked={rememberMe} onCheckedChange={(checked) => setRememberMe(checked as boolean)} className="border-muted-foreground data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                  <Label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">Remember me</Label>
                 </motion.div>
               </div>
             )}
             
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button type="submit" className="w-full bg-[#00ffe7] hover:bg-[#00bfff] text-black font-bold shadow-lg shadow-[#00ffe7]/20 hover:shadow-xl hover:shadow-[#00bfff]/30 transition-all duration-300" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? (isSignUp ? 'Creating account...' : 'Signing in...') : (isSignUp ? 'Create Account' : 'Sign in')}
               </Button>
             </motion.div>
           </form>
           
           <div className="relative">
-            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-600" /></div>
-            <div className="relative flex justify-center text-xs uppercase"><span className="bg-black/60 px-2 text-gray-400">Or</span></div>
+            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+            <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground">Or</span></div>
           </div>
           
           <div className="grid grid-cols-1 gap-3">
-            <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="outline" className="w-full bg-transparent border-gray-600 hover:bg-white/10" type="button" onClick={handleSocialLogin} disabled={isLoading || loading}>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button variant="outline" className="w-full bg-transparent border-border hover:bg-accent" type="button" onClick={handleSocialLogin} disabled={isLoading || loading}>
                 {isLoading || loading ? 'Redirecting...' : (
                   <>
                     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="currentColor"d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
@@ -168,10 +170,10 @@ export default function LoginForm() {
             </motion.div>
           </div>
           
-          <div className="text-center text-sm text-gray-300">
+          <div className="text-center text-sm text-muted-foreground">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             <motion.div className="inline-block" whileHover={{ scale: 1.05 }}>
-              <Button variant="link" className="px-0 text-[#00ffe7] hover:text-[#00bfff]" onClick={() => { setIsSignUp(!isSignUp); setMessage(null); setPassword(''); setName(''); }}>
+              <Button variant="link" className="px-0 text-primary hover:text-primary/80" onClick={() => { setIsSignUp(!isSignUp); setMessage(null); setPassword(''); setName(''); }}>
                 {isSignUp ? 'Sign in' : 'Sign up'}
               </Button>
             </motion.div>

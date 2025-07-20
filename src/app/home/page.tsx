@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from 'next/navigation';
-import AnimatedBackground from "../AnimatedBackground";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Youtube, Music, Image as ImageIcon, FileText, Bot, ArrowRight, Rss, Mail, LogOut, ChevronRight } from "lucide-react";
 
 export default function HomePage() {
   const { user, signOut } = useAuth();
@@ -17,288 +18,198 @@ export default function HomePage() {
     router.push('/'); // Redirect to login page after sign out
   };
 
-  // Animations for hero section elements and cards
-  useEffect(() => {
-    // Animate hero text after the navigation bar
-    const heroElements = document.querySelectorAll('.animate-hero-enter');
-    heroElements.forEach((el, index) => {
-      (el as HTMLElement).style.animationDelay = `${index * 0.15 + 0.7}s`; // Added base delay
-      el.classList.add('is-visible');
-    });
+  const featureCards = [
+    {
+      title: "LegeztTube",
+      description: "Watch your favorite videos from the internet, all in one place.",
+      icon: Youtube,
+      link: "/legezttube",
+      color: "bg-red-500",
+      image: "https://placehold.co/400x200",
+      "data-ai-hint": "video stream"
+    },
+    {
+      title: "Legeztify",
+      description: "Enjoy music from around the world, create playlists and discover new tracks.",
+      icon: Music,
+      link: "/legeztify",
+      color: "bg-green-500",
+      image: "https://placehold.co/400x200",
+       "data-ai-hint": "music stream"
+    },
+    {
+      title: "Legezterest",
+      description: "Discover, save, and download inspiring images with our creative visual hub.",
+      icon: ImageIcon,
+      link: "/legezterest",
+      color: "bg-orange-500",
+      image: "https://placehold.co/400x200",
+      "data-ai-hint": "abstract gallery"
+    },
+    {
+      title: "Legezt PDF AI",
+      description: "Upload your PDF and get instant AI-powered summaries and insights.",
+      icon: FileText,
+      link: "/legezt-pdf-ai",
+      color: "bg-blue-500",
+      image: "https://placehold.co/400x200",
+      "data-ai-hint": "document analysis"
+    },
+    {
+      title: "Legezt AI",
+      description: "Chat with our advanced AI assistant for help, advice, or just a conversation.",
+      icon: Bot,
+      link: "/legezt-ai",
+      color: "bg-purple-500",
+      image: "https://placehold.co/400x200",
+      "data-ai-hint": "ai chat"
+    }
+  ];
 
-    // Animate cards
-    const cardElements = document.querySelectorAll('.animate-card-pop-in');
-    cardElements.forEach((el, index) => {
-      (el as HTMLElement).style.animationDelay = `${index * 0.1 + 1.5}s`; // Staggered delay for cards
-      el.classList.add('is-visible');
-    });
+  const cardVariants = {
+    offscreen: {
+      y: 50,
+      opacity: 0
+    },
+    onscreen: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        bounce: 0.4,
+        duration: 0.8
+      }
+    }
+  };
 
-    // Animate footer elements
-    const footerElements = document.querySelectorAll('.animate-footer-enter');
-    footerElements.forEach((el, index) => {
-      (el as HTMLElement).style.animationDelay = `${index * 0.15 + 2.5}s`; // Staggered delay for footer
-      el.classList.add('is-visible');
-    });
-  }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden font-inter">
-      <AnimatedBackground />
-      {/* Top Navigation Bar */}
-      <nav className="w-full bg-black/80 border-b border-[#222] shadow-lg fixed top-0 left-0 z-50 animate-nav-slide-down">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-extrabold tracking-tight text-white bg-[#222] px-3 py-1 rounded-lg shadow-md animate-pulse-logo">LEGEZT</span>
-            <span className="text-xs text-[#00ffe7] font-semibold tracking-widest ml-2 hidden sm:block">Premium Tech in Space</span>
-          </div>
-          <div className="hidden md:flex gap-6 text-white font-medium text-lg items-center">
-            <Link href="/home" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Home</Link>
-            <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legeztify</Link>
-            <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezterest</Link>
-            <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">LegeztTube</Link>
-            <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt PDF AI</Link>
-            <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt AI</Link>
-            {user ? (
-                <button onClick={handleSignOut} className="hover:text-[#ff4d4d] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#ff4d4d]">Sign Out</button>
-            ) : (
-              <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Login</Link>
-            )}
-          </div>
+    <div className="min-h-screen w-full font-sans bg-background text-foreground">
+        <div className="absolute inset-0 z-0 opacity-20">
+            {/* You can keep the animated background or use a static one */}
         </div>
-      </nav>
-      
-      {/* Hero Section */}
-      <section className="pt-28 pb-12 flex flex-col items-center justify-center text-center relative px-4">
-        <h1 className="text-5xl sm:text-6xl font-extrabold text-white drop-shadow-[0_4px_24px_#00ffe7] tracking-tight mb-2 animate-hero-enter animate-text-glow-pulse">LEGEZT: YOUR AI POWERED MEDIA HUB</h1>
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#00ffe7] mb-6 tracking-widest animate-hero-enter">Stream Videos, Listen to Music, Download Images, Analyze PDFs, and Chat with AI</h2>
-        <div className="flex flex-col md:flex-row flex-wrap gap-6 justify-center w-full max-w-6xl mx-auto mt-8">
-          {/* Card 1: Video Streaming */}
-          <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00ffe7] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00ffe7] hover:ring-offset-2 hover:ring-offset-black">
-            <div className="relative mb-4 overflow-hidden rounded">
-              <Image
-                src="https://placehold.co/320x128"
-                alt="Stream Videos"
-                width={320}
-                height={128}
-                data-ai-hint="video stream"
-                className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-              />
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
-                <svg className="w-12 h-12 text-[#00ffe7] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v14l11-7z" />
-                </svg>
-              </span>
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-background via-background/90 to-background"></div>
+
+        <main className="relative z-20 container mx-auto px-4 py-24 sm:py-32">
+            {/* Hero Section */}
+            <motion.section 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-24"
+            >
+                <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary">
+                    Welcome to Legezt
+                </h1>
+                <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground">
+                    Your all-in-one AI-powered media hub. Stream videos, listen to music, analyze PDFs, and chat with our advanced AI, all in one place.
+                </p>
+            </motion.section>
+
+            {/* Features Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featureCards.map((card, index) => (
+                    <motion.div
+                        key={card.link}
+                        className="col-span-1"
+                        initial="offscreen"
+                        whileInView="onscreen"
+                        viewport={{ once: true, amount: 0.5 }}
+                        transition={{ staggerChildren: 0.2, delay: index * 0.1 }}
+                    >
+                        <motion.div variants={cardVariants}>
+                            <Card className="h-full bg-card/80 backdrop-blur-sm border-border hover:border-primary transition-all duration-300 group overflow-hidden shadow-lg hover:shadow-primary/20">
+                                <div className="relative h-48 overflow-hidden">
+                                     <Image
+                                        src={card.image}
+                                        alt={card.title}
+                                        width={400}
+                                        height={200}
+                                        data-ai-hint={card['data-ai-hint']}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent"></div>
+                                    <div className={`absolute top-4 right-4 p-3 rounded-full bg-card/50 backdrop-blur-sm`}>
+                                        <card.icon className="w-6 h-6 text-primary" />
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <h3 className="text-2xl font-bold text-foreground mb-2">{card.title}</h3>
+                                    <p className="text-muted-foreground mb-6">{card.description}</p>
+                                    <Link href={card.link} className="inline-flex items-center font-semibold text-primary hover:text-primary/80 transition-colors">
+                                        Explore Now <ChevronRight className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                    </Link>
+                                </div>
+                            </Card>
+                        </motion.div>
+                    </motion.div>
+                ))}
+                
+                {/* Sign Out Card */}
+                 <motion.div
+                    className="md:col-span-1 lg:col-span-1"
+                    initial="offscreen"
+                    whileInView="onscreen"
+                    viewport={{ once: true, amount: 0.5 }}
+                    transition={{ staggerChildren: 0.2 }}
+                >
+                     <motion.div variants={cardVariants}>
+                         <Card className="h-full bg-card/80 backdrop-blur-sm border-border hover:border-destructive/50 transition-all duration-300 group overflow-hidden shadow-lg hover:shadow-destructive/20 flex flex-col justify-center p-6">
+                            <div className="text-center">
+                                <div className="flex justify-center mb-4">
+                                     <div className="p-3 rounded-full bg-card/50 backdrop-blur-sm border border-border">
+                                        <LogOut className="w-6 h-6 text-destructive" />
+                                    </div>
+                                </div>
+                                <h3 className="text-2xl font-bold text-foreground mb-2">Sign Out</h3>
+                                <p className="text-muted-foreground mb-6">Ready to leave? Click below to end your session securely.</p>
+                                 <Button onClick={handleSignOut} variant="destructive" className="w-full">
+                                    Sign Out
+                                </Button>
+                            </div>
+                        </Card>
+                    </motion.div>
+                 </motion.div>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Legezt Tube</h3>
-            <p className="text-gray-300 mb-4 text-sm">Watch your favorite videos from the internet, all in one place with blazing fast streaming and a beautiful interface.</p>
-            <button className="bg-[#00ffe7] text-[#181818] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#00bfff] transition-all duration-300 transform hover:-translate-y-1">Explore Videos</button>
-          </div>
-          {/* Card 2: Music Streaming */}
-          <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00ff99] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00ff99] hover:ring-offset-2 hover:ring-offset-black">
-            <div className="relative mb-4 overflow-hidden rounded">
-              <Image
-                src="https://placehold.co/320x128"
-                alt="Listen to Music"
-                width={320}
-                height={128}
-                 data-ai-hint="music stream"
-                className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-              />
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
-                <svg className="w-12 h-12 text-[#00ff99] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-2v13" />
-                  <circle cx="6" cy="18" r="3" strokeWidth={2} />
-                </svg>
-              </span>
+        </main>
+
+        {/* Footer */}
+        <footer className="relative z-20 mt-32 pb-12 border-t border-border">
+            <div className="container mx-auto px-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
+                    <div className="col-span-1">
+                        <h4 className="text-2xl font-bold text-primary mb-4">LEGEZT</h4>
+                        <p className="text-muted-foreground">The future of media, powered by AI. Your central hub for entertainment and productivity.</p>
+                    </div>
+                    <div className="col-span-1">
+                        <h5 className="font-semibold text-foreground mb-4">Quick Links</h5>
+                        <ul className="space-y-2">
+                           {featureCards.slice(0, 4).map(item => (
+                               <li key={item.link}>
+                                   <Link href={item.link} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                                       <ArrowRight className="w-4 h-4"/>
+                                       {item.title}
+                                   </Link>
+                               </li>
+                           ))}
+                        </ul>
+                    </div>
+                    <div className="col-span-1">
+                        <h5 className="font-semibold text-foreground mb-4">Subscribe</h5>
+                        <p className="text-muted-foreground mb-4">Get the latest news and updates from Legezt directly to your inbox.</p>
+                        <form className="flex">
+                            <Input type="email" placeholder="your@email.com" className="bg-background/50 rounded-r-none focus:border-primary" />
+                            <Button type="submit" variant="secondary" className="rounded-l-none">
+                                <Rss className="w-5 h-5"/>
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+                 <div className="text-center text-sm text-muted-foreground mt-12 pt-8 border-t border-border/50">
+                    © {new Date().getFullYear()} Legezt. All Rights Reserved.
+                </div>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Legeztify</h3>
-            <p className="text-gray-300 mb-4 text-sm">Enjoy music from around the world, create playlists, and discover new tracks with AI recommendations.</p>
-            <button className="bg-[#00ff99] text-[#181818] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#00ffe7] transition-all duration-300 transform hover:-translate-y-1">Explore Music</button>
-          </div>
-          {/* Card 3: Image Download */}
-          <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#ffaa00] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#ffaa00] hover:ring-offset-2 hover:ring-offset-black">
-            <div className="relative mb-4 overflow-hidden rounded">
-              <Image
-                src="https://placehold.co/320x128"
-                alt="Download Images"
-                width={320}
-                height={128}
-                 data-ai-hint="abstract gallery"
-                className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-              />
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
-                <svg className="w-12 h-12 text-[#ffaa00] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12m0 0l-4-4m4 4l4-4m-4 4V4" />
-                </svg>
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Legezterest</h3>
-            <p className="text-gray-300 mb-4 text-sm">Discover, save, and download inspiring images with Legezterest—your creative visual hub.</p>
-            <button className="bg-[#ffaa00] text-[#181818] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#ffcc00] transition-all duration-300 transform hover:-translate-y-1">Explore Legezterest</button>
-          </div>
-          {/* Card 4: PDF AI Analysis */}
-          <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#00bfff] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#00bfff] hover:ring-offset-2 hover:ring-offset-black">
-            <div className="relative mb-4 overflow-hidden rounded">
-              <Image
-                src="https://placehold.co/320x128"
-                alt="PDF AI Analysis"
-                width={320}
-                height={128}
-                 data-ai-hint="document analysis"
-                className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-              />
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
-                <svg className="w-12 h-12 text-[#00bfff] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <rect x="4" y="4" width="16" height="16" rx="2" strokeWidth={2} />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 8h8M8 12h8M8 16h4" />
-                </svg>
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Legezt PDF AI</h3>
-            <p className="text-gray-300 mb-4 text-sm">Upload your PDF and get instant AI-powered summaries, insights, and advanced answers from your documents.</p>
-            <button className="bg-[#00bfff] text-[#181818] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#00ffe7] transition-all duration-300 transform hover:-translate-y-1">Analyze PDF</button>
-          </div>
-          {/* Card 5: AI Chat */}
-          <div className="bg-black/80 rounded-xl shadow-xl p-6 flex-1 min-w-[260px] max-w-sm border-t-4 border-[#ff00cc] transform hover:scale-105 transition-transform duration-300 animate-card-pop-in group hover:ring-4 hover:ring-[#ff00cc] hover:ring-offset-2 hover:ring-offset-black">
-            <div className="relative mb-4 overflow-hidden rounded">
-              <Image
-                src="https://placehold.co/320x128"
-                alt="AI Chat"
-                width={320}
-                height={128}
-                 data-ai-hint="ai chat"
-                className="w-full h-32 object-cover rounded transition-transform duration-500 group-hover:scale-110"
-              />
-              <span className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
-                <svg className="w-12 h-12 text-[#ff00cc] bg-black/60 rounded-full p-2 group-hover:bg-black/80 transition-colors duration-300 card-icon-animate" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10" strokeWidth={2} />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 15h8M9 10h.01M15 10h.01" />
-                </svg>
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Legezt AI Chat</h3>
-            <p className="text-gray-300 mb-4 text-sm">Chat with our advanced AI assistant for help, advice, or just a friendly conversation—anytime, anywhere.</p>
-            <button className="bg-[#ff00cc] text-[#181818] font-bold px-4 py-2 rounded-lg shadow-md hover:bg-[#ff66cc] transition-all duration-300 transform hover:-translate-y-1">Start Chatting</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="w-full bg-black/90 border-t border-[#222] py-8 mt-12">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-6 gap-6">
-          <div className="flex flex-col gap-2 text-white text-sm text-center md:text-left animate-footer-enter">
-            <span className="font-bold text-lg">SUBSCRIBE TO OUR NEWSLETTER!</span>
-            <span>Get the latest news and updates from Legezt.</span>
-            <div className="flex mt-2 w-full max-w-sm mx-auto md:mx-0">
-              <input type="email" placeholder="Your e-mail address..." className="px-3 py-2 rounded-l-lg bg-[#181818] border border-[#00ffe7] text-white focus:outline-none focus:ring-2 focus:ring-[#00ffe7] flex-grow" />
-              <button className="px-4 py-2 bg-[#00ffe7] text-[#181818] font-bold rounded-r-lg hover:bg-[#00bfff] transition-colors duration-300">SUBSCRIBE</button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 text-white text-sm text-center md:text-left animate-footer-enter">
-            <span className="font-bold text-lg">CONTACT US</span>
-            <span>If you are interested in learning more about Legezt, please <a href="#" className="text-[#00ffe7] underline hover:text-[#00bfff] transition-colors duration-300">send us an email</a>. We would love to hear from you!</span>
-          </div>
-          <div className="flex flex-col gap-2 text-white text-sm text-center md:text-left animate-footer-enter">
-            <span className="font-bold text-lg">Quick Links</span>
-            <div className="flex flex-wrap justify-center md:justify-start gap-3">
-              <Link href="/home" className="hover:text-[#00ffe7] transition-colors duration-300">Home</Link>
-              <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300">Legeztify</Link>
-              <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300">Legezterest</Link>
-              <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300">LegeztTube</Link>
-              <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt PDF AI</Link>
-              <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt AI</Link>
-            </div>
-          </div>
-        </div>
-        <div className="text-center text-xs text-gray-400 mt-6">© {new Date().getFullYear()} Legezt. All Rights Reserved.</div>
-      </footer>
-
-      <style>{`
-        /* Font import for Inter */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        body {
-          font-family: 'Inter', sans-serif;
-        }
-
-        /* Animations for hero section text */
-        @keyframes slideInUp {
-          0% { transform: translateY(20px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        .animate-hero-enter {
-          opacity: 0; /* Hidden by default */
-          animation: slideInUp 0.8s ease-out forwards;
-        }
-        .is-visible {
-          opacity: 1 !important;
-        }
-
-        /* Text glow pulse for main heading */
-        @keyframes textGlowPulse {
-          0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 231, 0.6), 0 0 20px rgba(0, 255, 231, 0.4); }
-          50% { text-shadow: 0 0 15px rgba(0, 255, 231, 0.8), 0 0 30px rgba(0, 255, 231, 0.6); }
-        }
-        .animate-text-glow-pulse {
-          animation: textGlowPulse 3s ease-in-out infinite alternate;
-        }
-
-        /* Animations for cards (pop-in effect) */
-        @keyframes cardPopIn {
-          0% { opacity: 0; transform: translateY(30px) scale(0.9); }
-          70% { opacity: 1; transform: translateY(-5px) scale(1.02); } /* Slight overshoot */
-          100% { transform: translateY(0) scale(1); }
-        }
-        .animate-card-pop-in {
-          opacity: 0; /* Hidden by default */
-          animation: cardPopIn 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; /* Bouncy effect */
-        }
-
-        /* Navigation bar slide down */
-        @keyframes navSlideDown {
-          0% { transform: translateY(-100%); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        .animate-nav-slide-down {
-          animation: navSlideDown 0.7s ease-out forwards;
-        }
-
-        /* Pulse animation for the logo */
-        @keyframes pulseLogo {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 255, 231, 0.5); }
-          50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(0, 255, 231, 0.8); }
-        }
-        .animate-pulse-logo {
-          animation: pulseLogo 2s ease-in-out infinite alternate;
-        }
-
-        /* Icon bounce animation on card hover */
-        @keyframes iconBounce {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.2); }
-        }
-        .group:hover .card-icon-animate {
-          animation: iconBounce 0.5s ease-in-out;
-        }
-
-        /* Footer section entrance animation */
-        .animate-footer-enter {
-          opacity: 0; /* Hidden by default */
-          animation: slideInUp 0.8s ease-out forwards;
-        }
-
-        /* Button hover effect (general) */
-        button {
-          transition: all 0.3s ease;
-        }
-        button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 15px rgba(0, 255, 231, 0.4);
-        }
-        button:active {
-          transform: translateY(0);
-          box-shadow: none;
-        }
-      `}</style>
+        </footer>
     </div>
   );
 }
