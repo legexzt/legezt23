@@ -20,7 +20,7 @@ const ScrapeUrlSchema = z.object({
 
 export type ScrapeUrlInput = z.infer<typeof ScrapeUrlSchema>;
 
-export const ScrapeResultSchema = z.object({
+const ScrapeResultSchema = z.object({
   success: z.boolean(),
   data: z.any().optional(),
   error: z.string().optional(),
@@ -28,7 +28,7 @@ export const ScrapeResultSchema = z.object({
 export type ScrapeResult = z.infer<typeof ScrapeResultSchema>;
 
 export async function scrapeUrl(input: ScrapeUrlInput): Promise<ScrapeResult> {
-  return scrapeUrlFlow(input);
+  return await scrapeUrlFlow(input);
 }
 
 const scrapeUrlFlow = ai.defineFlow(
