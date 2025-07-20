@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import SharedLayout from "@/components/shared-layout";
+import { AuthProvider } from "@/context/auth-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SharedLayout>{children}</SharedLayout>
+        <AuthProvider>
+          <SharedLayout>{children}</SharedLayout>
+        </AuthProvider>
       </body>
     </html>
   );
