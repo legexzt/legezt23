@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -53,7 +54,7 @@ export default function HomePage() {
       </nav>
       {/* Always visible fixed menu button on the left */}
       <button
-        className="fixed top-6 left-6 z-60 p-2 bg-[#222] rounded-full shadow-lg hover:bg-[#333] transition-colors duration-300"
+        className="fixed top-6 left-6 z-[60] p-2 bg-[#222] rounded-full shadow-lg hover:bg-[#333] transition-colors duration-300"
         onClick={() => setSidebarOpen(true)}
         aria-label="Open menu"
       >
@@ -64,7 +65,7 @@ export default function HomePage() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-[#181818] border-r border-[#00ffe7] z-[101] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out shadow-2xl`}
+        className={`fixed top-0 left-0 h-full w-64 bg-[#181818] border-r border-[#00ffe7] z-[70] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out shadow-2xl`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#00ffe7]">
           <span className="text-2xl font-bold text-[#00ffe7]">Menu</span>
@@ -85,7 +86,7 @@ export default function HomePage() {
       </aside>
       {/* Overlay for sidebar on mobile */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/40 md:hidden" onClick={() => setSidebarOpen(false)}></div>
+        <div className="fixed inset-0 z-[65] bg-black/40 md:hidden" onClick={() => setSidebarOpen(false)}></div>
       )}
 
       {/* Hero Section */}
