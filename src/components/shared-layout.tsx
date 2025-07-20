@@ -3,9 +3,11 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 
 export default function SharedLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <>
@@ -39,6 +41,9 @@ export default function SharedLayout({ children }: { children: ReactNode }) {
           <Link href="/legezttube" className="py-2 px-4 rounded text-lg text-white hover:bg-[#00ffe7] hover:text-[#181818] transition-colors duration-300" onClick={() => setSidebarOpen(false)}>LegeztTube</Link>
           <Link href="/legezt-pdf-ai" className="py-2 px-4 rounded text-lg text-white hover:bg-[#00ffe7] hover:text-[#181818] transition-colors duration-300" onClick={() => setSidebarOpen(false)}>Legezt PDF AI</Link>
           <Link href="/legezt-ai" className="py-2 px-4 rounded text-lg text-white hover:bg-[#00ffe7] hover:text-[#181818] transition-colors duration-300" onClick={() => setSidebarOpen(false)}>Legezt AI</Link>
+          {!user && (
+            <Link href="/login" className="py-2 px-4 rounded text-lg text-white hover:bg-[#00ffe7] hover:text-[#181818] transition-colors duration-300" onClick={() => setSidebarOpen(false)}>Login</Link>
+          )}
         </nav>
       </aside>
       {/* Overlay for sidebar on mobile */}

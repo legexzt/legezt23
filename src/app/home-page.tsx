@@ -4,8 +4,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/context/auth-context";
 
 export default function HomePage() {
+  const { user } = useAuth();
   // Animations for hero section elements and cards
   useEffect(() => {
     // Animate hero text after the navigation bar
@@ -40,13 +42,16 @@ export default function HomePage() {
             <span className="text-xs text-[#00ffe7] font-semibold tracking-widest ml-2 hidden sm:block">Premium Tech in Space</span>
           </div>
           <div className="hidden md:flex gap-6 text-white font-medium text-lg">
-  <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Home</Link>
-  <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legeztify</Link>
-  <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezterest</Link>
-  <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">LegeztTube</Link>
-  <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt PDF AI</Link>
-  <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt AI</Link>
-</div>
+            <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Home</Link>
+            <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legeztify</Link>
+            <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezterest</Link>
+            <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">LegeztTube</Link>
+            <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt PDF AI</Link>
+            <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt AI</Link>
+            {!user && (
+              <Link href="/login" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Login</Link>
+            )}
+          </div>
         </div>
       </nav>
       
@@ -184,13 +189,13 @@ export default function HomePage() {
           <div className="flex flex-col gap-2 text-white text-sm text-center md:text-left animate-footer-enter">
             <span className="font-bold text-lg">Quick Links</span>
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
-  <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300">Home</Link>
-  <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300">Legeztify</Link>
-  <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300">Legezterest</Link>
-  <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300">LegeztTube</Link>
-  <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt PDF AI</Link>
-  <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt AI</Link>
-</div>
+              <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300">Home</Link>
+              <Link href="/legeztify" className="hover:text-[#00ffe7] transition-colors duration-300">Legeztify</Link>
+              <Link href="/legezterest" className="hover:text-[#00ffe7] transition-colors duration-300">Legezterest</Link>
+              <Link href="/legezttube" className="hover:text-[#00ffe7] transition-colors duration-300">LegeztTube</Link>
+              <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt PDF AI</Link>
+              <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300">Legezt AI</Link>
+            </div>
           </div>
         </div>
         <div className="text-center text-xs text-gray-400 mt-6">© {new Date().getFullYear()} Legezt. All Rights Reserved.</div>
