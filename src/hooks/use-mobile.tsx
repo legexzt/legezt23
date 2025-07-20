@@ -1,27 +1,26 @@
+"use client";
 
-"use client"
+import { useEffect, useState } from "react";
 
-import * as React from "react"
+export function useIsMobile(breakpoint = 768) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-const MOBILE_BREAKPOINT = 768
-
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
+  useEffect(() => {
+    setIsMounted(true);
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+      setIsMobile(window.innerWidth < breakpoint);
     };
 
-    // Initial check after component mounts on the client
-    checkIsMobile(); 
-    
+    checkIsMobile();
     window.addEventListener("resize", checkIsMobile);
 
     return () => {
       window.removeEventListener("resize", checkIsMobile);
     };
-  }, []);
+  }, [breakpoint]);
 
-  return isMobile;
+  // Only return the true value on the client after mounting
+  // On the server or during initial client render, it will be false
+  return isMounted ? isMobile : false;
 }
