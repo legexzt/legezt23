@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -45,6 +44,7 @@ export default function GalleryPage() {
         if (!searchQuery) {
             setImages([]);
             setLoading(false);
+            setHasSearched(false);
             return;
         }
         setLoading(true);
@@ -136,7 +136,7 @@ export default function GalleryPage() {
                         <Card key={index} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
                             <Image
                                 src={image.src}
-                                alt={image.alt || `Anime image ${index + 1}`}
+                                alt={image.alt || `Legezterest image ${index + 1}`}
                                 width={300}
                                 height={300}
                                 className="w-full h-full object-cover aspect-square"
@@ -166,7 +166,7 @@ export default function GalleryPage() {
                         <div className="relative">
                             <Image 
                                 src={selectedImage.src} 
-                                alt={selectedImage.alt || 'Selected anime image'}
+                                alt={selectedImage.alt || 'Selected Legezterest image'}
                                 width={1200}
                                 height={1200}
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
@@ -188,4 +188,3 @@ export default function GalleryPage() {
         </div>
     );
 }
-
