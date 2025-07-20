@@ -49,7 +49,7 @@ export default function ImageGallery({ images, onImageSelect, onImageLike, liked
               className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
             />
             
-            <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300`}></div>
+            <div className={`absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent transition-opacity duration-300`}></div>
             
             <div className={`absolute top-4 right-4 flex flex-col gap-2 transition-all duration-300 ${hoveredImage === image.id ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
               <Button
