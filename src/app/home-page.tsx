@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 import { useRouter } from 'next/navigation';
+import AnimatedBackground from "../AnimatedBackground";
 
 export default function HomePage() {
   const { user, signOut } = useAuth();
@@ -42,6 +43,7 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden font-inter">
+      <AnimatedBackground />
       {/* Top Navigation Bar */}
       <nav className="w-full bg-black/80 border-b border-[#222] shadow-lg fixed top-0 left-0 z-50 animate-nav-slide-down">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
