@@ -5,9 +5,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const { user, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/'); // Redirect to login page after sign out
+  };
+
   // Animations for hero section elements and cards
   useEffect(() => {
     // Animate hero text after the navigation bar
@@ -49,7 +57,7 @@ export default function HomePage() {
             <Link href="/legezt-pdf-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt PDF AI</Link>
             <Link href="/legezt-ai" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Legezt AI</Link>
             {user ? (
-                <button onClick={signOut} className="hover:text-[#ff4d4d] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#ff4d4d]">Sign Out</button>
+                <button onClick={handleSignOut} className="hover:text-[#ff4d4d] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#ff4d4d]">Sign Out</button>
             ) : (
               <Link href="/" className="hover:text-[#00ffe7] transition-colors duration-300 transform hover:scale-105 hover:drop-shadow-[0_0_10px_#00ffe7]">Login</Link>
             )}

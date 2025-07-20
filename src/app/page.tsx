@@ -1,8 +1,11 @@
+
 import LoginForm from "./login/login-form";
+import AnimatedBackground from "./AnimatedBackground";
 
 export default function LoginPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+    <div className="relative flex items-center justify-center min-h-screen p-4">
+      <AnimatedBackground />
       <LoginForm />
     </div>
   );
