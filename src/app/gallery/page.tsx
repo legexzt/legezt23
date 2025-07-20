@@ -1,11 +1,10 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/components/auth-provider';
 import { useRouter } from 'next/navigation';
-import { scrapeUrl } from '@/ai/flows/scrape';
-import type { ScrapeResult } from '@/ai/flows/scrape-types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,12 +23,21 @@ function GallerySkeleton() {
     );
 }
 
+type ImageType = {
+  id: string;
+  author: string;
+  width: number;
+  height: number;
+  url: string;
+  download_url: string;
+};
+
 export default function GalleryPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
-    const [images, setImages] = useState<any[]>([]);
+    const [images, setImages] = useState<ImageType[]>([]);
     const [loading, setLoading] = useState(false);
-    const [selectedImage, setSelectedImage] = useState<any | null>(null);
+    const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
     const { query } = useSearchStore();
     const { toast } = useToast();
     const [hasSearched, setHasSearched] = useState(false);
@@ -50,22 +58,13 @@ export default function GalleryPage() {
         setLoading(true);
         setHasSearched(true);
         try {
-            const result: ScrapeResult = await scrapeUrl({
-                url: `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(searchQuery)}`,
-            });
-            if (result && result.success && result.data && Array.isArray(result.data.images)) {
-                setImages(result.data.images.slice(0, 50));
-            } else {
-                setImages([]);
-                console.error('No images found or invalid data format:', result?.error || result);
-                if(result?.error) {
-                    toast({
-                        title: 'Search Failed',
-                        description: result.error,
-                        variant: 'destructive',
-                    });
-                }
+            // Using a more reliable image provider instead of scraping
+            const response = await fetch('https://picsum.photos/v2/list?page=1&limit=50');
+            if (!response.ok) {
+                throw new Error('Failed to fetch images from the provider.');
             }
+            const data: ImageType[] = await response.json();
+            setImages(data);
         } catch (error: any) {
             console.error('Failed to fetch images:', error);
             setImages([]);
@@ -79,8 +78,9 @@ export default function GalleryPage() {
         }
     };
 
-    const handleDownload = async (imageUrl: string, imageName: string = 'legezterest-image.png') => {
+    const handleDownload = async (imageUrl: string, imageName: string = 'legezterest-image.jpg') => {
         try {
+            // Use a proxy or server-side fetch if CORS issues persist
             const response = await fetch(imageUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -107,10 +107,15 @@ export default function GalleryPage() {
     }
 
     useEffect(() => {
-        if (user) {
+        if (user && query) {
             fetchImages(query);
+        } else {
+            setLoading(false);
+            setHasSearched(false);
+            setImages([]);
         }
     }, [user, query]);
+
 
     if (authLoading || !user) {
         return <GallerySkeleton />;
@@ -133,14 +138,13 @@ export default function GalleryPage() {
             return (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {images.map((image, index) => (
-                        <Card key={index} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
+                        <Card key={image.id} className="overflow-hidden cursor-pointer" onClick={() => setSelectedImage(image)}>
                             <Image
-                                src={image.src}
-                                alt={image.alt || `Legezterest image ${index + 1}`}
+                                src={image.download_url}
+                                alt={`Photo by ${image.author}`}
                                 width={300}
                                 height={300}
                                 className="w-full h-full object-cover aspect-square"
-                                unoptimized
                             />
                         </Card>
                     ))}
@@ -165,18 +169,17 @@ export default function GalleryPage() {
                     {selectedImage && (
                         <div className="relative">
                             <Image 
-                                src={selectedImage.src} 
-                                alt={selectedImage.alt || 'Selected Legezterest image'}
+                                src={selectedImage.download_url} 
+                                alt={`Photo by ${selectedImage.author}`}
                                 width={1200}
                                 height={1200}
                                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
-                                unoptimized
                             />
                             <div className="absolute top-2 right-2 flex gap-2">
-                               <Button size="icon" variant="secondary" onClick={() => selectedImage.src && handleCopyLink(selectedImage.src)}>
+                               <Button size="icon" variant="secondary" onClick={() => selectedImage && handleCopyLink(selectedImage.download_url)}>
                                    <LinkIcon className="h-4 w-4" />
                                </Button>
-                               <Button size="icon" variant="secondary" onClick={() => handleDownload(selectedImage.src, selectedImage.alt)}>
+                               <Button size="icon" variant="secondary" onClick={() => handleDownload(selectedImage.download_url, `photo-${selectedImage.id}-by-${selectedImage.author}.jpg`)}>
                                    <Download className="h-4 w-4" />
                                </Button>
                             </div>
@@ -187,4 +190,5 @@ export default function GalleryPage() {
 
         </div>
     );
-}
+
+    
