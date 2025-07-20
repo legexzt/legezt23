@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,12 @@ const themes = [
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
 
   return (
     <div className="container mx-auto max-w-3xl py-8">
@@ -40,12 +47,12 @@ export default function SettingsPage() {
                   onClick={() => setTheme(t.class)}
                   className={cn(
                     'flex items-center justify-center w-full h-16 rounded-lg border-2 transition-colors',
-                    theme === t.class ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
+                    mounted && theme === t.class ? 'border-primary' : 'border-transparent hover:border-muted-foreground/50'
                   )}
                   style={{ backgroundColor: t.color }}
                   aria-label={`Select ${t.name} theme`}
                 >
-                  {theme === t.class && <Check className="h-6 w-6 text-primary-foreground" />}
+                  {mounted && theme === t.class && <Check className="h-6 w-6 text-primary-foreground" />}
                 </button>
                 <p className="text-center text-sm font-medium">{t.name}</p>
               </div>
