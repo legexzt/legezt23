@@ -244,7 +244,7 @@ export default function LegeztAIPage() {
               </div>
               
               <div className="flex items-center justify-center mt-2">
-                <p className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground">
                   Powered by {currentModel?.name}
                   {currentModel?.premium && (
                     <Badge variant="secondary" className="ml-2">
@@ -252,7 +252,7 @@ export default function LegeztAIPage() {
                       Premium
                     </Badge>
                   )}
-                </p>
+                </div>
               </div>
             </div>
           </div>
