@@ -42,7 +42,7 @@ export default function ImageGallery({ images, onImageSelect, onImageLike, liked
 
   return (
     <>
-    <Masonry columnsCount={5} gutter="24px" className="masonry-grid">
+    <Masonry columnsCount={5} gutter="24px">
       {images.map((image, index) => (
         <div
           key={image.id}
@@ -51,8 +51,8 @@ export default function ImageGallery({ images, onImageSelect, onImageLike, liked
           onMouseLeave={() => setHoveredImage(null)}
           onClick={() => onImageSelect(image)}
           style={{
+            animation: `fadeInUp 0.5s ease-out forwards`,
             animationDelay: `${index * 0.05}s`,
-            animation: 'fadeInUp 0.5s ease-out forwards',
             opacity: 0,
           }}
         >
