@@ -1,7 +1,7 @@
 
 "use server";
 
-import ytdl from 'ytdl-core';
+import ytdl, { videoFormat } from 'ytdl-core';
 
 // Helper function to format duration from seconds to HH:MM:SS
 const formatDuration = (seconds: number) => {
@@ -9,7 +9,18 @@ const formatDuration = (seconds: number) => {
   return new Date(seconds * 1000).toISOString().substr(11, 8).replace(/^(00:)?/, '');
 };
 
-export async function getVideoInfo(url: string) {
+export interface SearchedVideoInfo {
+  title: string;
+  thumbnail: string;
+  author: string;
+  duration: string;
+  url: string;
+  mp4Formats: videoFormat[];
+  mp3Formats: videoFormat[];
+}
+
+
+export async function getVideoInfo(url: string): Promise<SearchedVideoInfo> {
   if (!ytdl.validateURL(url)) {
     throw new Error("Invalid YouTube URL.");
   }
@@ -41,7 +52,7 @@ export async function getVideoInfo(url: string) {
   } catch (error: unknown) {
     console.error("YTDL Error:", error);
     // Provide a more user-friendly error message
-    if (error instanceof Error && (error as any).statusCode === 410) {
+    if (error instanceof Error && (error as { statusCode?: number }).statusCode === 410) {
         throw new Error("The video is unavailable. It might have been deleted or made private.");
     }
     throw new Error("Could not retrieve video information. It may be age-restricted, private, or a live stream.");

@@ -15,12 +15,24 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { getVideoInfo } from './actions';
+import { getVideoInfo, SearchedVideoInfo } from './actions';
 import Image from 'next/image';
 
-interface VideoInfo {
+interface VideoPlayerInfo {
     title: string;
     channel: string;
+    videoUrl: string;
+}
+
+interface VideoCardInfo {
+    id: number;
+    title: string;
+    channel: string;
+    views: string;
+    time: string;
+    duration: string;
+    thumbnail: string;
+    "data-ai-hint": string;
     videoUrl: string;
 }
 
@@ -58,7 +70,7 @@ const suggestedVideos = [
 ];
 
 interface VideoPlayerProps {
-  video: VideoInfo;
+  video: VideoPlayerInfo;
   onClose: () => void;
 }
 
@@ -82,20 +94,20 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
 
-    const updateTime = () => setCurrentTime(video.currentTime);
-    const updateDuration = () => setDuration(video.duration);
+    const updateTime = () => setCurrentTime(videoEl.currentTime);
+    const updateDuration = () => setDuration(videoEl.duration);
     
-    video.addEventListener('timeupdate', updateTime);
-    video.addEventListener('loadedmetadata', updateDuration);
-    video.addEventListener('ended', () => setIsPlaying(false));
+    videoEl.addEventListener('timeupdate', updateTime);
+    videoEl.addEventListener('loadedmetadata', updateDuration);
+    videoEl.addEventListener('ended', () => setIsPlaying(false));
 
     return () => {
-      video.removeEventListener('timeupdate', updateTime);
-      video.removeEventListener('loadedmetadata', updateDuration);
-      video.removeEventListener('ended', () => setIsPlaying(false));
+      videoEl.removeEventListener('timeupdate', updateTime);
+      videoEl.removeEventListener('loadedmetadata', updateDuration);
+      videoEl.removeEventListener('ended', () => setIsPlaying(false));
     };
   }, []);
   
@@ -117,6 +129,10 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
     if (videoRef.current) videoRef.current.muted = newMutedState;
   }, [isMuted]);
 
+  const skipTime = useCallback((seconds: number) => {
+    if (videoRef.current) videoRef.current.currentTime += seconds;
+  }, []);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).tagName === 'INPUT') return;
@@ -134,7 +150,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [togglePlayPause, toggleMute]);
+  }, [togglePlayPause, toggleMute, skipTime]);
 
    useEffect(() => {
     if (videoRef.current) {
@@ -142,10 +158,6 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
     }
   }, [playbackSpeed]);
 
-
-  const skipTime = (seconds: number) => {
-    if (videoRef.current) videoRef.current.currentTime += seconds;
-  };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     const rect = playerRef.current?.getBoundingClientRect();
@@ -360,7 +372,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
 }
 
 const FloatingParticles = () => {
-    const [particles, setParticles] = useState<any[]>([]);
+    const [particles, setParticles] = useState<Array<{left: string, top: string, duration: number, delay: number, x: number}>>([]);
   
     useEffect(() => {
       const newParticles = Array.from({ length: 20 }).map(() => ({
@@ -403,14 +415,14 @@ const FloatingParticles = () => {
 
 export default function LegeztTube() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedVideo, setSelectedVideo] = useState<VideoInfo | null>(null);
-  const [filteredVideos, setFilteredVideos] = useState<any[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoPlayerInfo | null>(null);
+  const [filteredVideos, setFilteredVideos] = useState<VideoCardInfo[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchedVideoInfo, setSearchedVideoInfo] = useState<any>(null);
+  const [searchedVideoInfo, setSearchedVideoInfo] = useState<SearchedVideoInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const mockVideos = [
+    const mockVideos: VideoCardInfo[] = [
         { id: 1, title: "Epic Gaming Montage 2025 | Best Moments", channel: "GameMaster Pro", views: "2.1M views", time: "3 days ago", duration: "15:42", thumbnail: "https://placehold.co/500x300", "data-ai-hint": "gaming montage", videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
         { id: 2, title: "Relaxing Lofi Hip Hop Beats | Study Music", channel: "Chill Vibes", views: "8.5M views", time: "1 week ago", duration: "1:24:33", thumbnail: "https://placehold.co/500x300", "data-ai-hint": "lofi girl", videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
         { id: 3, title: "Amazing Nature Documentary | 4K Ultra HD", channel: "Wild Explorer", views: "5.2M views", time: "5 days ago", duration: "28:15", thumbnail: "https://placehold.co/500x300", "data-ai-hint": "nature documentary", videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" },
@@ -430,14 +442,18 @@ export default function LegeztTube() {
     try {
       const videoInfo = await getVideoInfo(searchQuery);
       setSearchedVideoInfo(videoInfo);
-    } catch (err: any) {
-      setError(err.message || "An error occurred.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setIsSearching(false);
     }
   };
 
-  const handleVideoClick = (video: any) => setSelectedVideo(video);
+  const handleVideoClick = (video: VideoCardInfo | VideoPlayerInfo) => setSelectedVideo(video as VideoPlayerInfo);
   const closeVideo = () => setSelectedVideo(null);
 
   return (
@@ -475,7 +491,7 @@ export default function LegeztTube() {
           {searchedVideoInfo && (
             <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -50, scale: 0.9 }} className="mb-12">
               <h2 className="text-2xl font-bold mb-4">Your Video:</h2>
-               <div className="cursor-pointer group" onClick={() => handleVideoClick({ ...searchedVideoInfo, videoUrl: searchedVideoInfo.mp4Formats[0]?.url, channel: searchedVideoInfo.author })}>
+               <div className="cursor-pointer group" onClick={() => handleVideoClick({ title: searchedVideoInfo.title, videoUrl: searchedVideoInfo.mp4Formats[0]?.url, channel: searchedVideoInfo.author })}>
                 <Card className="bg-card/80 border-border overflow-hidden backdrop-blur-sm hover:border-primary transition-all duration-300">
                   <div className="relative aspect-video overflow-hidden">
                     <motion.div whileHover={{ scale: 1.05 }} className="w-full h-full">
