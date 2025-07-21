@@ -7,13 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import Masonry from 'react-responsive-masonry';
-
-interface Image {
-    id: string;
-    url: string;
-    title: string;
-    tags: string[];
-}
+import type { Image } from './types';
 
 interface ImageGalleryProps {
     images: Image[];

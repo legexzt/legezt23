@@ -8,19 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
-
-interface Image {
-    id: string;
-    url: string;
-    title: string;
-    author: string;
-    tags: string[];
-    size: {
-        width: number;
-        height: number;
-    };
-    category: string;
-}
+import type { Image } from './types';
 
 interface ImageModalProps {
     image: Image | null;

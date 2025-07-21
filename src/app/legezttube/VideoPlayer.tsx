@@ -9,12 +9,10 @@ import {
   Share2, RotateCcw, RotateCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
-import type { videoFormat } from 'ytdl-core';
 
 interface VideoPlayerInfo {
     title: string;
@@ -84,7 +82,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const togglePlayPause = useCallback(() => {
     if (videoRef.current) {

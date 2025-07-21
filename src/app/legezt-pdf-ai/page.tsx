@@ -13,10 +13,8 @@ import {
   Shield,
   Brain,
   CheckCircle,
-  X,
   MessageSquare,
   Trash2,
-  Download,
   Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +31,11 @@ import {
 } from "@/components/ui/dialog";
 import { ChatInterface } from "./components/ChatInterface";
 
+interface ChatMessage {
+  role: "user" | "bot";
+  text: string;
+}
+
 interface PDFFile {
   id: string;
   file: File;
@@ -44,7 +47,7 @@ interface PDFFile {
   summary?: string;
   isProcessing?: boolean;
   isUploaded: boolean;
-  chatHistory?: any[];
+  chatHistory?: ChatMessage[];
 }
 
 // Global storage key
@@ -70,9 +73,10 @@ export default function LegeztPDFAIPage() {
     const savedPDFs = localStorage.getItem(STORAGE_KEY);
     if (savedPDFs) {
       try {
-        const parsedPDFs = JSON.parse(savedPDFs);
+        type StoredPDF = Omit<PDFFile, "file">;
+        const parsedPDFs = JSON.parse(savedPDFs) as StoredPDF[];
         setUploadedPDFs(
-          parsedPDFs.map((pdf: any) => ({
+          parsedPDFs.map((pdf) => ({
             ...pdf,
             file: new File([], pdf.name, {
               type: "application/pdf",

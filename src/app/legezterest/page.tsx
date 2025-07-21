@@ -9,20 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import ImageGallery from './ImageGallery';
 import ImageModal from './ImageModal';
-
-interface Image {
-  id: string;
-  url: string;
-  title: string;
-  author: string;
-  likes: number;
-  category: string;
-  tags: string[];
-  size: {
-    width: number;
-    height: number;
-  };
-}
+import type { Image } from './types';
 
 // Mock data for image categories
 const categories = [
