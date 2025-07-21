@@ -82,7 +82,7 @@ export function VideoPlayer({ video, onClose }: VideoPlayerProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const togglePlayPause = useCallback(() => {
     if (videoRef.current) {
