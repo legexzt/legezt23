@@ -28,12 +28,12 @@ export default function SharedLayout({ children }: { children: ReactNode }) {
         <>
           {/* Always visible fixed menu button on the left */}
           <button
-            className="fixed top-6 left-6 z-[60] p-2 bg-card/80 backdrop-blur-sm border border-border rounded-full shadow-lg hover:bg-accent transition-colors duration-300"
+            className="fixed top-4 left-4 z-[60] p-1.5 bg-card/80 backdrop-blur-sm border border-border rounded-full shadow-lg hover:bg-accent transition-colors duration-300"
             onClick={() => setSidebarOpen(true)}
             aria-label="Open menu"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-primary">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
 
