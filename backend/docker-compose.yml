@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  youtube-backend:
+    build: .
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/app
+      - ./cookies.txt:/app/cookies.txt
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
