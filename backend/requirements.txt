@@ -1,0 +1,8 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+yt-dlp>=2023.12.30
+httpx==0.25.2
+pydantic==2.5.0
+python-multipart==0.0.6
+# Optional: pytube as fallback
+# pytube==15.0.0
